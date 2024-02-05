@@ -1,0 +1,12 @@
+{
+  "signUpTitle": "{nameOfTheApp} 회원가입",
+  "signUpSubtitle": "Create a profile, follow other accounts, make your own videos, and more.",
+  "useEmailPassword": "Use Email & Password",
+  "signUpWithFacebook": "Sign up with Facebook",
+  "signUpWithApple": "Sign up with Apple",
+  "signUpWithGoogle": "Sign up with Google",
+  "alreadyHaveAnAccount": "Already have an account?",
+  "logIn": "Log in",
+  "likeCount": "{value}",
+  "videoCommentCount": "{value} {value2, plural, =1{comment} other{comments}}"
+}
