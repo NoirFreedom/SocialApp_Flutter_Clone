@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 final routerProvider = Provider((ref) {
-  ref.watch(authState);
+  // ref.watch(authState);
   return GoRouter(
     initialLocation: "/home",
     redirect: (context, state) {

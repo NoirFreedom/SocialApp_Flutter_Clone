@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class UserRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<void> createProfile(UserProfileModel user) async {}
+  Future<void> createProfile(UserProfileModel profile) async {
+    await _db.collection("users").doc(profile.uid).set(profile.toJson());
+  }
   //get profile
   //update profileImg
   //update bio
