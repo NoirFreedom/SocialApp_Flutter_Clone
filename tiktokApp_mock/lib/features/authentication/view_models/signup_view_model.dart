@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
 import 'package:TikTok/features/onboarding/interests_screen.dart';
-import 'package:TikTok/features/users/view_model/users_view_model.dart';
+import 'package:TikTok/features/users/view_models/users_view_model.dart';
 import 'package:TikTok/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
