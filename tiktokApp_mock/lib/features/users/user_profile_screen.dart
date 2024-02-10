@@ -3,6 +3,7 @@ import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
 import 'package:TikTok/features/settings/settings_screen.dart';
 import 'package:TikTok/features/users/view_models/users_view_model.dart';
+import 'package:TikTok/features/users/views/user_profile_edit.dart';
 import 'package:TikTok/features/users/views/widgets/avatar.dart';
 import 'package:TikTok/features/users/views/widgets/persistent_tab_bar.dart';
 import 'package:TikTok/features/users/views/widgets/user_profile_stats.dart';
@@ -10,6 +11,7 @@ import 'package:TikTok/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   final String username;
@@ -29,6 +31,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   void _onGearPress() {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => const SettingsScreen()));
+  }
+
+  void _onPenToSquarePress() {
+    context.pushNamed(UserProfileEditScreen.routeName);
   }
 
   @override
@@ -52,12 +58,19 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                     return [
                       if (screenSize.width < Breakpoints.md)
                         SliverAppBar(
+                          centerTitle: true,
                           title: Text(data.name),
                           actions: [
                             IconButton(
-                                onPressed: _onGearPress,
-                                icon: const FaIcon(FontAwesomeIcons.gear,
-                                    size: Sizes.size20))
+                              onPressed: _onPenToSquarePress,
+                              icon: const FaIcon(FontAwesomeIcons.penToSquare,
+                                  size: Sizes.size20),
+                            ),
+                            IconButton(
+                              onPressed: _onGearPress,
+                              icon: const FaIcon(FontAwesomeIcons.gear,
+                                  size: Sizes.size20),
+                            ),
                           ],
                         ),
                       SliverToBoxAdapter(
@@ -261,7 +274,11 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                             : Column(
                                 children: [
                                   Gaps.v10,
-                                  Avatar(name: data.name),
+                                  Avatar(
+                                    name: data.name,
+                                    hasAvatar: data.hasAvatar,
+                                    uid: data.uid,
+                                  ),
                                   Gaps.v10,
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
