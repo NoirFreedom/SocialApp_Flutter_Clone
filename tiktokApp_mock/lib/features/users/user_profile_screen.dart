@@ -247,21 +247,21 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                           ],
                                         ),
                                         Gaps.v14,
-                                        const Text(
-                                          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                                        Text(
+                                          ref.read(bioProvider),
                                           textAlign: TextAlign.center,
                                         ),
                                         Gaps.v20,
-                                        const Row(
+                                        Row(
                                           children: [
-                                            FaIcon(
+                                            const FaIcon(
                                               FontAwesomeIcons.link,
                                               size: Sizes.size12,
                                             ),
                                             Gaps.h4,
                                             Text(
-                                              "www.gloomdev.com",
-                                              style: TextStyle(
+                                              ref.read(linkProvider),
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.w600),
                                             ),
                                           ],
@@ -278,6 +278,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                     name: data.name,
                                     hasAvatar: data.hasAvatar,
                                     uid: data.uid,
+                                    isTapEnabled: false,
                                   ),
                                   Gaps.v10,
                                   Row(
@@ -406,26 +407,26 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                     ),
                                   ),
                                   Gaps.v32,
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: Sizes.size32),
                                     child: Text(
-                                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                                      ref.read(bioProvider),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                   Gaps.v14,
-                                  const Row(
+                                  Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      FaIcon(
+                                      const FaIcon(
                                         FontAwesomeIcons.link,
                                         size: Sizes.size12,
                                       ),
                                       Gaps.h4,
                                       Text(
-                                        "www.gloomdev.com",
-                                        style: TextStyle(
+                                        ref.read(linkProvider),
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ],

@@ -36,11 +36,13 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     if (credential.user == null) {
       throw Exception("Account creation failed. Please try again.");
     }
+    const bio = "";
+    const link = "";
     state = const AsyncValue.loading();
     final profile = UserProfileModel(
       hasAvatar: false,
-      bio: "Undefined",
-      link: "Undefined",
+      bio: bio,
+      link: link,
       email: credential.user!.email ?? "Anonymous@user.com",
       uid: credential.user!.uid,
       name: username,
@@ -57,10 +59,28 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     await _userRepository.updateUser(state.value!.uid, {"hasAvatar": true});
   }
 
-  Future<void> onBioUpdate() async {}
+  Future<void> onUsernameUpdate(String username) async {
+    if (state.value == null) return;
+    state = AsyncValue.data(state.value!.copyWith(name: username));
+    await _userRepository.updateUser(state.value!.uid, {"name": username});
+  }
 
-  Future<void> onLinkUpdate() async {}
+  Future<void> onBioUpdate(String bio) async {
+    if (state.value == null) return;
+    state = AsyncValue.data(state.value!.copyWith(bio: bio));
+    await _userRepository.updateUser(state.value!.uid, {"bio": bio});
+  }
+
+  Future<void> onLinkUpdate(String link) async {
+    if (state.value == null) return;
+    state = AsyncValue.data(state.value!.copyWith(link: link));
+    await _userRepository.updateUser(state.value!.uid, {"link": link});
+  }
 }
 
 final usersProvider = AsyncNotifierProvider<UsersViewModel, UserProfileModel>(
     () => UsersViewModel());
+
+final usernameProvider = StateProvider<String>((ref) => '');
+final bioProvider = StateProvider<String>((ref) => '');
+final linkProvider = StateProvider<String>((ref) => '');

@@ -8,18 +8,20 @@ class Avatar extends ConsumerWidget {
   final String name;
   final bool hasAvatar;
   final String uid;
+  final bool isTapEnabled; // 추가된 부분
 
   const Avatar({
     super.key,
     required this.name,
     required this.hasAvatar,
     required this.uid,
+    this.isTapEnabled = true,
   });
 
   Future<void> _onAvatarTap(WidgetRef ref) async {
     final xfile = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      imageQuality: 40,
+      imageQuality: 100,
       maxHeight: 150,
       maxWidth: 150,
     );
@@ -33,7 +35,7 @@ class Avatar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isLodding = ref.watch(avatarProvider).isLoading;
     return GestureDetector(
-      onTap: isLodding ? null : () => _onAvatarTap(ref),
+      onTap: (isLodding || !isTapEnabled) ? null : () => _onAvatarTap(ref),
       child: isLodding
           ? Container(
               width: 50,
