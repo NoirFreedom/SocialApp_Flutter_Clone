@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:TikTok/features/videos/models/video_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +10,15 @@ class VideoRepository {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Upload a video file
+  UploadTask uploadVideoFile(File video, String uid) {
+    final fileRef = _storage.ref().child(
+        "/videos/$uid/${DateTime.now().millisecondsSinceEpoch.toString()}");
+    return fileRef.putFile(video);
+  }
+
+  Future<void> saveVideo(VideoModel data) async {
+    await _db.collection("videos").add(data.toJson());
+  }
 
   // create a video document
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyDPgVBXkX604z3Z_ckfHC3gn-GCVt0I5Dg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>549286872426</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.tiktokPractice.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>sns-project-a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>sns-project-a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:549286872426:ios:b67b81b40d70b5f0159113</string>
+</dict>
+</plist>

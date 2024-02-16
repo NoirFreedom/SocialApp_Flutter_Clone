@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:TikTok/features/videos/view_models/timeline_vm.dart';
+import 'package:TikTok/features/videos/views/video_upload_form.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,8 +55,11 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
     setState(() {});
   }
 
-  void _onUploadPressed() async {
-    ref.read(timelineProvider.notifier).uploadVideo();
+  void _onPressedNext() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => VideoUploadForm(
+              video: widget.video,
+            )));
   }
 
   @override
@@ -70,7 +73,10 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Video Preview"),
+        title: const Text(
+          "Video Preview",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
         actions: [
           if (!widget.isPicked)
             IconButton(
@@ -79,13 +85,12 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
                   ? const FaIcon(FontAwesomeIcons.check)
                   : const FaIcon(FontAwesomeIcons.download),
             ),
-          IconButton(
-            onPressed: ref.watch(timelineProvider).isLoading
-                ? () {}
-                : _onUploadPressed,
-            icon: ref.watch(timelineProvider).isLoading
-                ? const CircularProgressIndicator()
-                : const FaIcon(FontAwesomeIcons.cloudArrowUp),
+          TextButton(
+            onPressed: _onPressedNext,
+            child: const Text(
+              "Next",
+              style: TextStyle(fontSize: 16, color: Colors.blue),
+            ),
           ),
         ],
       ),
