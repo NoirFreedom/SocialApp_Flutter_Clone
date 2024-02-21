@@ -1,4 +1,4 @@
-import 'package:TikTok/features/videos/view_models/timeline_vm.dart';
+import 'package:TikTok/features/videos/view_models/timeline_view_model.dart';
 import 'package:TikTok/features/videos/views/widgets/video_post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,8 +64,13 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
               scrollDirection: Axis.vertical,
               onPageChanged: _onPageChanged,
               itemCount: videos.length,
-              itemBuilder: (context, index) =>
-                  VideoPost(onVideoFinished: _onVideoFinished, index: index),
+              itemBuilder: (context, index) {
+                final videoData = videos[index];
+                return VideoPost(
+                    onVideoFinished: _onVideoFinished,
+                    index: index,
+                    videoData: videoData);
+              },
             ),
           ),
         );

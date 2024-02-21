@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
-import 'package:TikTok/features/videos/view_models/timeline_vm.dart';
+import 'package:TikTok/features/videos/view_models/timeline_view_model.dart';
 import 'package:TikTok/features/videos/view_models/upload_video_view_model.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';

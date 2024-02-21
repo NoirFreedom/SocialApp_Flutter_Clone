@@ -1,4 +1,5 @@
 import 'package:TikTok/constants/breakpoints.dart';
+import 'package:TikTok/features/videos/models/video_model.dart';
 import 'package:TikTok/features/videos/view_models/playback_config_vm.dart';
 import 'package:TikTok/features/videos/views/widgets/video_comments.dart';
 import 'package:TikTok/features/videos/views/widgets/video_sideButton.dart';
@@ -16,8 +17,14 @@ import 'package:visibility_detector/visibility_detector.dart';
 class VideoPost extends ConsumerStatefulWidget {
   final Function onVideoFinished;
   final int index;
-  const VideoPost(
-      {super.key, required this.onVideoFinished, required this.index});
+  final VideoModel videoData;
+
+  const VideoPost({
+    super.key,
+    required this.videoData,
+    required this.onVideoFinished,
+    required this.index,
+  });
 
   @override
   VideoPostState createState() => VideoPostState();
@@ -185,9 +192,8 @@ class VideoPostState extends ConsumerState<VideoPost>
                 Positioned.fill(
                   child: _videoPlayerController.value.isInitialized
                       ? VideoPlayer(_videoPlayerController)
-                      : Container(
-                          color: Colors.black54,
-                        ),
+                      : Image.network(widget.videoData.thumbnailUrl,
+                          fit: BoxFit.cover),
                 ),
                 Positioned.fill(
                   child: GestureDetector(
@@ -243,17 +249,17 @@ class VideoPostState extends ConsumerState<VideoPost>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "@Username",
-                        style: TextStyle(
+                      Text(
+                        "@${widget.videoData.creator}",
+                        style: const TextStyle(
                             fontSize: Sizes.size20,
                             color: Colors.white,
                             fontWeight: FontWeight.w600),
                       ),
                       Gaps.v14,
-                      const Text(
-                        "Where users leave their comment",
-                        style: TextStyle(
+                      Text(
+                        widget.videoData.description,
+                        style: const TextStyle(
                             fontSize: Sizes.size16, color: Colors.white),
                       ),
                       Gaps.v10,
@@ -306,22 +312,25 @@ class VideoPostState extends ConsumerState<VideoPost>
                   bottom: 30,
                   child: Column(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 25,
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
                         foregroundImage: NetworkImage(
-                            "https://avatars.githubusercontent.com/u/107906605?v=4"),
-                        child: Text("Edit"),
+                            "https://firebasestorage.googleapis.com/v0/b/sns-project-a.appspot.com/o/avatars%2F${widget.videoData.creatorUid}?alt=media"),
+                        child: Text(widget.videoData.creator),
                       ),
                       VideoButton(
                           icon: FontAwesomeIcons.solidHeart,
-                          text: S.of(context).likeCount(987654231)),
+                          text:
+                              S.of(context).likeCount(widget.videoData.likes)),
                       GestureDetector(
                         onTap: () => _onCommentsTap(context),
-                        child: const VideoButton(
+                        child: VideoButton(
                             icon: FontAwesomeIcons.solidMessage,
-                            text: "Message"),
+                            text: S
+                                .of(context)
+                                .likeCount(widget.videoData.comments)),
                       ),
                       const VideoButton(
                           icon: FontAwesomeIcons.share, text: "Share"),

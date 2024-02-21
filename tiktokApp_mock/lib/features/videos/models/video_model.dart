@@ -7,7 +7,7 @@ class VideoModel {
   final int comments;
   final String creatorUid;
   final String creator;
-  final int creatorAt;
+  final int createdAt;
 
   VideoModel({
     required this.title,
@@ -17,9 +17,20 @@ class VideoModel {
     required this.likes,
     required this.comments,
     required this.creatorUid,
-    required this.creatorAt,
+    required this.createdAt,
     required this.creator,
   });
+
+  VideoModel.fromJson(Map<String, dynamic> json)
+      : title = json['title'],
+        description = json['description'],
+        videoUrl = json['videoUrl'],
+        thumbnailUrl = json['thumbnailUrl'],
+        likes = json['likes'],
+        comments = json['comments'],
+        creatorUid = json['creatorUid'],
+        createdAt = json['createdAt'],
+        creator = json['creator'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -30,7 +41,7 @@ class VideoModel {
       "likes": likes,
       "comments": comments,
       "creatorUid": creatorUid,
-      "creatorAt": creatorAt,
+      "createdAt": createdAt,
       "creator": creator,
     };
   }

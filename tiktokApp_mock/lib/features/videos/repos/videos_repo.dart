@@ -20,6 +20,12 @@ class VideoRepository {
     await _db.collection("videos").add(data.toJson());
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchVideos() {
+    return _db
+        .collection("videos")
+        .orderBy("createdAt", descending: true)
+        .get();
+  }
   // create a video document
 }
 
