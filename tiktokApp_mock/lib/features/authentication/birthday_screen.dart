@@ -1,4 +1,5 @@
 import 'package:TikTok/features/authentication/view_models/signup_view_model.dart';
+import 'package:TikTok/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:TikTok/constants/gaps.dart';
@@ -72,11 +73,11 @@ class _BirthdayScreenScreenState extends ConsumerState<BirthdayScreen> {
               ),
             ),
             Gaps.v10,
-            const Text(
+            Text(
               "Your birthday won't be shown publicly",
               style: TextStyle(
                 fontSize: Sizes.size16,
-                color: Colors.black54,
+                color: isDarkMode(context) ? Colors.white : Colors.black54,
                 fontWeight: FontWeight.w600,
               ),
             ),

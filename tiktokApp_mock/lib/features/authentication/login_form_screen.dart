@@ -68,6 +68,14 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
             child: Column(
               children: [
                 Gaps.v28,
+                const Text(
+                  "\"Please enter your email and password\"",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+                Gaps.v32,
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   keyboardType: TextInputType.emailAddress,
@@ -101,7 +109,7 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
                     }
                   },
                 ),
-                Gaps.v28,
+                Gaps.v40,
                 GestureDetector(
                   onTap: _onSubmitTap,
                   child:

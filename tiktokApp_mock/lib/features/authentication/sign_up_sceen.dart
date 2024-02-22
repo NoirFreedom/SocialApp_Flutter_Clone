@@ -1,5 +1,5 @@
 import 'package:TikTok/features/authentication/login_screen.dart';
-import 'package:TikTok/features/authentication/username_screen.dart';
+import 'package:TikTok/features/authentication/signup_username_screen.dart';
 import 'package:TikTok/features/authentication/view_models/social_auth_view_model.dart';
 
 import 'package:TikTok/generated/l10n.dart';

@@ -1,4 +1,5 @@
 import 'package:TikTok/features/authentication/view_models/signup_view_model.dart';
+import 'package:TikTok/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
@@ -76,11 +77,11 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
                 ),
               ),
               Gaps.v10,
-              const Text(
+              Text(
                 'You can always change this later',
                 style: TextStyle(
                   fontSize: Sizes.size16,
-                  color: Colors.black54,
+                  color: isDarkMode(context) ? Colors.white : Colors.black54,
                   fontWeight: FontWeight.w600,
                 ),
               ),
