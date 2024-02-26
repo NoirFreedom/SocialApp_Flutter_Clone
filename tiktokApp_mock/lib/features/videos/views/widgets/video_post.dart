@@ -1,6 +1,7 @@
 import 'package:TikTok/constants/breakpoints.dart';
 import 'package:TikTok/features/videos/models/video_model.dart';
 import 'package:TikTok/features/videos/view_models/playback_config_vm.dart';
+import 'package:TikTok/features/videos/view_models/video_post_view_model.dart';
 import 'package:TikTok/features/videos/views/widgets/video_comments.dart';
 import 'package:TikTok/features/videos/views/widgets/video_sideButton.dart';
 import 'package:TikTok/generated/l10n.dart';
@@ -70,6 +71,10 @@ class VideoPostState extends ConsumerState<VideoPost>
         widget.onVideoFinished();
       }
     }
+  }
+
+  void _onlikeTaped() {
+    ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
   }
 
   void _initVideoPlayer() async {
@@ -320,10 +325,14 @@ class VideoPostState extends ConsumerState<VideoPost>
                             "https://firebasestorage.googleapis.com/v0/b/sns-project-a.appspot.com/o/avatars%2F${widget.videoData.creatorUid}?alt=media"),
                         child: Text(widget.videoData.creator),
                       ),
-                      VideoButton(
-                          icon: FontAwesomeIcons.solidHeart,
-                          text:
-                              S.of(context).likeCount(widget.videoData.likes)),
+                      GestureDetector(
+                        onTap: _onlikeTaped,
+                        child: VideoButton(
+                            icon: FontAwesomeIcons.solidHeart,
+                            text: S
+                                .of(context)
+                                .likeCount(widget.videoData.likes)),
+                      ),
                       GestureDetector(
                         onTap: () => _onCommentsTap(context),
                         child: VideoButton(

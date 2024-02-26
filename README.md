@@ -92,7 +92,7 @@ TikTok을 벤치마킹하며, 그 플랫폼의 핵심 기능들을 재현하며 
 
 </p>
 
-*유저의 프로필 정보는 Firestore database와 연결되어 있으며, 우측 상단에 편집 아이콘을 눌러 정보를 수정하고 'Done'을 누르면 변경된 정보가 각각에 해당하는 `StateProvider`에 저장되고, 이후, 유저 프로필 관련 비즈니스 로직을 처리하는 UserViewModel을 통해 Firestore database에 전달되고 업데이트되며, UI에도 반영되어 표시된다.*
+*유저의 프로필 정보는 Firestore database와 연결되어 있으며, 우측 상단에 편집 아이콘을 눌러 정보를 수정하고 'Done'을 누르면 변경된 정보가 각각에 해당하는 `StateProvider`에 저장되고, 이후, 유저 프로필 관련 비즈니스 로직을 처리하는 UserViewModel을 통해 Firestore database에 전달되고 업데이트되며, UI에도 반영되어 표시됩니다.*
 
 <br>
 

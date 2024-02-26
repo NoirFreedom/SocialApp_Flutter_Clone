@@ -14,7 +14,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
   final Duration _scrollDuration = const Duration(milliseconds: 200);
   final Curve _scrollCurve = Curves.linear;
   final PageController _pageController = PageController();
-  int _itemCount = 4;
+  int _itemCount = 0;
 
   void _onVideoFinished() {
     return;
@@ -27,8 +27,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
       curve: _scrollCurve,
     );
     if (page == _itemCount - 1) {
-      _itemCount = _itemCount + 4;
-      setState(() {});
+      ref.watch(timelineProvider.notifier).fetchNextPage();
     }
   }
 
@@ -39,9 +38,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
   }
 
   Future<void> _onRefresh() {
-    return Future.delayed(
-      const Duration(milliseconds: 300),
-    );
+    return ref.watch(timelineProvider.notifier).refresh();
   }
 
   @override
@@ -54,25 +51,28 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
             "Error: $error",
             style: const TextStyle(color: Colors.black),
           )),
-          data: (videos) => RefreshIndicator(
-            color: Colors.blueGrey,
-            displacement: 50.0,
-            edgeOffset: 50,
-            onRefresh: _onRefresh,
-            child: PageView.builder(
-              controller: _pageController,
-              scrollDirection: Axis.vertical,
-              onPageChanged: _onPageChanged,
-              itemCount: videos.length,
-              itemBuilder: (context, index) {
-                final videoData = videos[index];
-                return VideoPost(
-                    onVideoFinished: _onVideoFinished,
-                    index: index,
-                    videoData: videoData);
-              },
-            ),
-          ),
+          data: (videos) {
+            _itemCount = videos.length;
+            return RefreshIndicator(
+              color: Colors.blueGrey,
+              displacement: 50.0,
+              edgeOffset: 50,
+              onRefresh: _onRefresh,
+              child: PageView.builder(
+                controller: _pageController,
+                scrollDirection: Axis.vertical,
+                onPageChanged: _onPageChanged,
+                itemCount: videos.length,
+                itemBuilder: (context, index) {
+                  final videoData = videos[index];
+                  return VideoPost(
+                      onVideoFinished: _onVideoFinished,
+                      index: index,
+                      videoData: videoData);
+                },
+              ),
+            );
+          },
         );
   }
 }
