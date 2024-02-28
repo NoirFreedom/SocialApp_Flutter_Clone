@@ -73,7 +73,7 @@ class VideoPostState extends ConsumerState<VideoPost>
     }
   }
 
-  void _onlikeTaped() {
+  void _onLikeTaped() {
     ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
   }
 
@@ -326,7 +326,7 @@ class VideoPostState extends ConsumerState<VideoPost>
                         child: Text(widget.videoData.creator),
                       ),
                       GestureDetector(
-                        onTap: _onlikeTaped,
+                        onTap: _onLikeTaped,
                         child: VideoButton(
                             icon: FontAwesomeIcons.solidHeart,
                             text: S

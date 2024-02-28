@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onVideoCreated = void 0;
+exports.onLikedRemoved = exports.onLikedCreated = exports.onVideoCreated = void 0;
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
-exports.onVideoCreated = functions.firestore.document("videos/{videoId}").onCreate(async (snapshot, context) => {
+exports.onVideoCreated = functions.firestore
+    .document("videos/{videoId}")
+    .onCreate(async (snapshot, context) => {
     const spawn = require('child-process-promise').spawn;
     const video = snapshot.data();
     await spawn("ffmpeg", [
@@ -32,6 +34,25 @@ exports.onVideoCreated = functions.firestore.document("videos/{videoId}").onCrea
         .set({
         thumbnailUrl: file.publicUrl(),
         videoId: snapshot.id
+    });
+});
+// '좋아요'를 눌렀을 때
+exports.onLikedCreated = functions.firestore
+    .document("likes/{likeId}")
+    .onCreate(async (snapshot, context) => {
+    const db = admin.firestore();
+    const [videoId, _] = snapshot.id.split("000");
+    await db.collection("videos").doc(videoId).update({
+        likes: admin.firestore.FieldValue.increment(1)
+    });
+});
+exports.onLikedRemoved = functions.firestore
+    .document("likes/{likeId}")
+    .onDelete(async (snapshot, context) => {
+    const db = admin.firestore();
+    const [videoId, _] = snapshot.id.split("000");
+    await db.collection("videos").doc(videoId).update({
+        likes: admin.firestore.FieldValue.increment(-1)
     });
 });
 //# sourceMappingURL=index.js.map
