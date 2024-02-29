@@ -4,6 +4,7 @@ exports.onLikedRemoved = exports.onLikedCreated = exports.onVideoCreated = void 
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
+// 비디오 생성시 썸네일 추출기능
 exports.onVideoCreated = functions.firestore
     .document("videos/{videoId}")
     .onCreate(async (snapshot, context) => {
@@ -41,7 +42,8 @@ exports.onLikedCreated = functions.firestore
     .document("likes/{likeId}")
     .onCreate(async (snapshot, context) => {
     const db = admin.firestore();
-    const [videoId, _] = snapshot.id.split("000");
+    const [videoId, userId] = snapshot.id.split("000");
+    await db.collection("users").doc(userId).collection("likes").doc(videoId).set({ liked: true });
     await db.collection("videos").doc(videoId).update({
         likes: admin.firestore.FieldValue.increment(1)
     });
@@ -50,7 +52,8 @@ exports.onLikedRemoved = functions.firestore
     .document("likes/{likeId}")
     .onDelete(async (snapshot, context) => {
     const db = admin.firestore();
-    const [videoId, _] = snapshot.id.split("000");
+    const [videoId, userId] = snapshot.id.split("000");
+    await db.collection("users").doc(userId).collection("likes").doc(videoId).delete();
     await db.collection("videos").doc(videoId).update({
         likes: admin.firestore.FieldValue.increment(-1)
     });

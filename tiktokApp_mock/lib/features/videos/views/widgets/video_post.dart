@@ -323,7 +323,10 @@ class VideoPostState extends ConsumerState<VideoPost>
                         foregroundColor: Colors.white,
                         foregroundImage: NetworkImage(
                             "https://firebasestorage.googleapis.com/v0/b/sns-project-a.appspot.com/o/avatars%2F${widget.videoData.creatorUid}?alt=media"),
-                        child: Text(widget.videoData.creator),
+                        child: Text(
+                          widget.videoData.creator,
+                          style: const TextStyle(fontSize: 6),
+                        ),
                       ),
                       GestureDetector(
                         onTap: _onLikeTaped,
