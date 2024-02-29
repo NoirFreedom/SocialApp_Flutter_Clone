@@ -40,6 +40,8 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   bool _showFullText = false;
   bool _isPaused = false;
+  bool _isLiked = false;
+  int _likesCount = 0;
 
   // late ValueNotifier<bool> _isMutedLocally;
 
@@ -74,7 +76,12 @@ class VideoPostState extends ConsumerState<VideoPost>
   }
 
   void _onLikeTaped() {
-    ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
+    ref.read(videoPostProvider(widget.videoData.id).notifier).toggleLikeVideo();
+    setState(() {
+      _isLiked = !_isLiked;
+      // 즉각적인 UI 업데이트를 위해 좋아요 수를 증가 또는 감소
+      _likesCount = _isLiked ? _likesCount + 1 : _likesCount - 1;
+    });
   }
 
   void _initVideoPlayer() async {
@@ -87,10 +94,18 @@ class VideoPostState extends ConsumerState<VideoPost>
     setState(() {});
   }
 
+  Future<void> _initLiked() async {
+    _isLiked = await ref
+        .read(videoPostProvider(widget.videoData.id).notifier)
+        .isLikedVideo();
+    final likesCount = widget.videoData.likes;
+  }
+
   @override
   void initState() {
     super.initState();
     _initVideoPlayer();
+    _initLiked();
 
     _animationController = AnimationController(
       vsync: this,
@@ -328,13 +343,25 @@ class VideoPostState extends ConsumerState<VideoPost>
                           style: const TextStyle(fontSize: 6),
                         ),
                       ),
+                      // Like 버튼
                       GestureDetector(
                         onTap: _onLikeTaped,
-                        child: VideoButton(
-                            icon: FontAwesomeIcons.solidHeart,
-                            text: S
-                                .of(context)
-                                .likeCount(widget.videoData.likes)),
+                        child: Column(
+                          children: [
+                            Gaps.v28,
+                            FaIcon(
+                              FontAwesomeIcons.solidHeart,
+                              color:
+                                  _isLiked ? Colors.red.shade300 : Colors.white,
+                              size: Sizes.size28,
+                            ),
+                            Gaps.v10,
+                            Text(
+                              S.of(context).likeCount(_likesCount),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
                       ),
                       GestureDetector(
                         onTap: () => _onCommentsTap(context),
@@ -344,9 +371,8 @@ class VideoPostState extends ConsumerState<VideoPost>
                                 .of(context)
                                 .likeCount(widget.videoData.comments)),
                       ),
-                      const VideoButton(
-                          icon: FontAwesomeIcons.share, text: "Share"),
-                      const VideoButton(
+                      VideoButton(icon: FontAwesomeIcons.share, text: "Share"),
+                      VideoButton(
                         icon: FontAwesomeIcons.music,
                         text: "Music",
                       ),

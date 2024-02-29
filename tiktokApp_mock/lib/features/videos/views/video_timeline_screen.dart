@@ -1,5 +1,5 @@
 import 'package:TikTok/features/videos/view_models/timeline_view_model.dart';
-import 'package:TikTok/features/videos/views/widgets/video_post.dart';
+import 'package:TikTok/features/videos/views/video_post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -23,9 +23,10 @@ class VideoModel {
     required this.creator,
   });
 
-  VideoModel.fromJson(
-      {required Map<String, dynamic> json, required String videoId})
-      : id = videoId,
+  VideoModel.fromJson({
+    required Map<String, dynamic> json,
+    required String videoId,
+  })  : id = videoId,
         title = json['title'],
         description = json['description'],
         videoUrl = json['videoUrl'],
@@ -38,7 +39,7 @@ class VideoModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id, // "id": "1
+      "id": id, // "id": "1"
       "title": title,
       "description": description,
       "videoUrl": videoUrl,
