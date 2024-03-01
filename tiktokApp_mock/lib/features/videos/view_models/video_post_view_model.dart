@@ -9,8 +9,8 @@ class VideoPostViewModel extends FamilyAsyncNotifier<void, String> {
   late final _videoId;
 
   @override
-  FutureOr<void> build(String videoId) {
-    _videoId = videoId;
+  FutureOr<void> build(String args) {
+    _videoId = args;
     _videoRepository = ref.read(videoRepo);
   }
 
