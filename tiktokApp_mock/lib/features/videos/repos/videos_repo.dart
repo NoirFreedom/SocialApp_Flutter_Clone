@@ -54,6 +54,15 @@ class VideoRepository {
     final documentSnapshot = await query.get();
     return documentSnapshot.exists;
   }
+
+  Future<int> fetchLikesCount(String videoId) async {
+    final videoDoc = await _db.collection('videos').doc(videoId).get();
+    if (videoDoc.exists && videoDoc.data()!.containsKey('likes')) {
+      return videoDoc.data()!['likes'] as int;
+    } else {
+      return 0; // 문서가 없거나 'likes' 필드가 없는 경우 0 반환
+    }
+  }
 }
 
 final videoRepo = Provider((ref) => VideoRepository());
