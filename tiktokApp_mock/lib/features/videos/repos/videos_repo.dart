@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:TikTok/features/videos/models/video_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -49,18 +48,20 @@ class VideoRepository {
   }
 
   Future<bool> isLikedVideo(String videoId, String userId) async {
-    final query =
+    final likeQuery =
         _db.collection("users").doc(userId).collection("likes").doc(videoId);
-    final documentSnapshot = await query.get();
-    return documentSnapshot.exists;
+    final likedSnapshot = await likeQuery.get();
+    return likedSnapshot.exists;
   }
 
   Future<int> fetchLikesCount(String videoId) async {
-    final videoDoc = await _db.collection('videos').doc(videoId).get();
-    if (videoDoc.exists && videoDoc.data()!.containsKey('likes')) {
-      return videoDoc.data()!['likes'] as int;
+    final videoQuery = _db.collection("videos").doc(videoId);
+    final videoSnapshot = await videoQuery.get();
+    final videoData = videoSnapshot.data();
+    if (videoData == null) {
+      return 0;
     } else {
-      return 0; // 문서가 없거나 'likes' 필드가 없는 경우 0 반환
+      return videoData['likesCount'] ?? 0;
     }
   }
 }
