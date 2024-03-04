@@ -1,8 +1,8 @@
-class VideoPostState {
+class VideoPostStatus {
   final bool isLiked;
   final int likesCount;
 
-  VideoPostState({
+  VideoPostStatus({
     required this.isLiked,
     required this.likesCount,
   });

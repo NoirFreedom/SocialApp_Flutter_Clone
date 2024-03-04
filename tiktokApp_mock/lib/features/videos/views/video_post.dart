@@ -40,8 +40,6 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   bool _showFullText = false;
   bool _isPaused = false;
-  bool _isLiked = false;
-  int _likesCount = 0;
 
   // late ValueNotifier<bool> _isMutedLocally;
 
@@ -75,13 +73,10 @@ class VideoPostState extends ConsumerState<VideoPost>
     }
   }
 
-  void _onLikeTaped() {
-    ref.read(videoPostProvider(widget.videoData.id).notifier).toggleLikeVideo();
-    setState(() {
-      _isLiked = !_isLiked;
-      // 즉각적인 UI 업데이트를 위해 좋아요 수를 증가 또는 감소
-      _likesCount = _isLiked ? _likesCount + 1 : _likesCount - 1;
-    });
+  void _onLikeTaped() async {
+    await ref
+        .read(videoPostProvider(widget.videoData.id).notifier)
+        .toggleLikeVideo();
   }
 
   void _initVideoPlayer() async {
@@ -94,18 +89,10 @@ class VideoPostState extends ConsumerState<VideoPost>
     setState(() {});
   }
 
-  Future<void> _initLiked() async {
-    _isLiked = await ref
-        .read(videoPostProvider(widget.videoData.id).notifier)
-        .isLikedVideo();
-    final likesCount = widget.videoData.likes;
-  }
-
   @override
   void initState() {
     super.initState();
     _initVideoPlayer();
-    _initLiked();
 
     _animationController = AnimationController(
       vsync: this,
@@ -197,193 +184,204 @@ class VideoPostState extends ConsumerState<VideoPost>
     const String originalText =
         "#Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: Breakpoints.md,
-          ),
-          child: VisibilityDetector(
-            key: Key("${widget.index}"),
-            onVisibilityChanged: _onVisibilityChanged,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: _videoPlayerController.value.isInitialized
-                      ? VideoPlayer(_videoPlayerController)
-                      : Image.network(widget.videoData.thumbnailUrl,
-                          fit: BoxFit.cover),
+    return ref.watch(videoPostProvider(widget.videoData.id)).when(
+          loading: () => const CircularProgressIndicator.adaptive(),
+          data: (data) => Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: Breakpoints.md,
                 ),
-                Positioned.fill(
-                  child: GestureDetector(
-                    onTap: _onTogglePause,
-                  ),
-                ),
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: Center(
-                      child: AnimatedBuilder(
-                        animation: _animationController,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: _animationController.value,
-                            child: child,
-                          );
-                        },
-                        child: AnimatedOpacity(
-                            opacity: _isPaused ? 1 : 0,
-                            duration: _animationDuration,
-                            child: _isPaused
-                                ? const FaIcon(
-                                    FontAwesomeIcons.play,
-                                    color: Colors.white,
-                                    size: Sizes.size56,
-                                  )
-                                : const FaIcon(
-                                    FontAwesomeIcons.pause,
-                                    color: Colors.white,
-                                    size: Sizes.size56,
-                                  )),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 40,
-                  left: 20,
-                  child: IconButton(
-                    onPressed: _onPlaybackConfigChanged,
-                    icon: FaIcon(
-                      ref.watch(playbackConfigProvider).muted
-                          ? FontAwesomeIcons.volumeXmark
-                          : FontAwesomeIcons.volumeHigh,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 15,
-                  right: 100,
-                  bottom: 30,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: VisibilityDetector(
+                  key: Key("${widget.index}"),
+                  onVisibilityChanged: _onVisibilityChanged,
+                  child: Stack(
                     children: [
-                      Text(
-                        "@${widget.videoData.creator}",
-                        style: const TextStyle(
-                            fontSize: Sizes.size20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600),
+                      Positioned.fill(
+                        child: _videoPlayerController.value.isInitialized
+                            ? VideoPlayer(_videoPlayerController)
+                            : Image.network(widget.videoData.thumbnailUrl,
+                                fit: BoxFit.cover),
                       ),
-                      Gaps.v14,
-                      Text(
-                        widget.videoData.description,
-                        style: const TextStyle(
-                            fontSize: Sizes.size16, color: Colors.white),
-                      ),
-                      Gaps.v10,
-                      Wrap(
-                        children: [
-                          Text(
-                            _showFullText
-                                ? originalText
-                                : (originalText.length > 25
-                                    ? "${originalText.substring(0, 25)}..."
-                                    : originalText),
-                            softWrap: true,
-                            style: const TextStyle(
-                              fontSize: Sizes.size16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          if (originalText.length > 25)
-                            GestureDetector(
-                              onTap: _onTextTap,
-                              child: Text(
-                                _showFullText ? "See less" : "See more",
-                                style: const TextStyle(
-                                  fontSize: Sizes.size14,
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      Gaps.v14,
-                      const Row(
-                        children: [
-                          FaIcon(FontAwesomeIcons.music,
-                              size: Sizes.size20, color: Colors.white),
-                          Gaps.h10,
-                          Text(
-                            "Text Moving",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  right: 20,
-                  bottom: 30,
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        foregroundImage: NetworkImage(
-                            "https://firebasestorage.googleapis.com/v0/b/sns-project-a.appspot.com/o/avatars%2F${widget.videoData.creatorUid}?alt=media"),
-                        child: Text(
-                          widget.videoData.creator,
-                          style: const TextStyle(fontSize: 6),
+                      Positioned.fill(
+                        child: GestureDetector(
+                          onTap: _onTogglePause,
                         ),
                       ),
-                      // Like 버튼
-                      GestureDetector(
-                        onTap: _onLikeTaped,
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: Center(
+                            child: AnimatedBuilder(
+                              animation: _animationController,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _animationController.value,
+                                  child: child,
+                                );
+                              },
+                              child: AnimatedOpacity(
+                                  opacity: _isPaused ? 1 : 0,
+                                  duration: _animationDuration,
+                                  child: _isPaused
+                                      ? const FaIcon(
+                                          FontAwesomeIcons.play,
+                                          color: Colors.white,
+                                          size: Sizes.size56,
+                                        )
+                                      : const FaIcon(
+                                          FontAwesomeIcons.pause,
+                                          color: Colors.white,
+                                          size: Sizes.size56,
+                                        )),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 40,
+                        left: 20,
+                        child: IconButton(
+                          onPressed: _onPlaybackConfigChanged,
+                          icon: FaIcon(
+                            ref.watch(playbackConfigProvider).muted
+                                ? FontAwesomeIcons.volumeXmark
+                                : FontAwesomeIcons.volumeHigh,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 15,
+                        right: 100,
+                        bottom: 30,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Gaps.v28,
-                            FaIcon(
-                              FontAwesomeIcons.solidHeart,
-                              color:
-                                  _isLiked ? Colors.red.shade300 : Colors.white,
-                              size: Sizes.size28,
+                            Text(
+                              "@${widget.videoData.creator}",
+                              style: const TextStyle(
+                                  fontSize: Sizes.size20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Gaps.v14,
+                            Text(
+                              widget.videoData.description,
+                              style: const TextStyle(
+                                  fontSize: Sizes.size16, color: Colors.white),
                             ),
                             Gaps.v10,
-                            Text(
-                              S.of(context).likeCount(_likesCount),
-                              style: const TextStyle(color: Colors.white),
+                            Wrap(
+                              children: [
+                                Text(
+                                  _showFullText
+                                      ? originalText
+                                      : (originalText.length > 25
+                                          ? "${originalText.substring(0, 25)}..."
+                                          : originalText),
+                                  softWrap: true,
+                                  style: const TextStyle(
+                                    fontSize: Sizes.size16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                if (originalText.length > 25)
+                                  GestureDetector(
+                                    onTap: _onTextTap,
+                                    child: Text(
+                                      _showFullText ? "See less" : "See more",
+                                      style: const TextStyle(
+                                        fontSize: Sizes.size14,
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            Gaps.v14,
+                            const Row(
+                              children: [
+                                FaIcon(FontAwesomeIcons.music,
+                                    size: Sizes.size20, color: Colors.white),
+                                Gaps.h10,
+                                Text(
+                                  "Text Moving",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () => _onCommentsTap(context),
-                        child: VideoButton(
-                            icon: FontAwesomeIcons.solidMessage,
-                            text: S
-                                .of(context)
-                                .likeCount(widget.videoData.comments)),
-                      ),
-                      VideoButton(icon: FontAwesomeIcons.share, text: "Share"),
-                      VideoButton(
-                        icon: FontAwesomeIcons.music,
-                        text: "Music",
+                      Positioned(
+                        right: 20,
+                        bottom: 30,
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              foregroundImage: NetworkImage(
+                                  "https://firebasestorage.googleapis.com/v0/b/sns-project-a.appspot.com/o/avatars%2F${widget.videoData.creatorUid}?alt=media"),
+                              child: Text(
+                                widget.videoData.creator,
+                                style: const TextStyle(fontSize: 6),
+                              ),
+                            ),
+                            // Like 버튼
+                            GestureDetector(
+                              onTap: _onLikeTaped,
+                              child: Column(
+                                children: [
+                                  Gaps.v28,
+                                  FaIcon(
+                                    FontAwesomeIcons.solidHeart,
+                                    color: data.isLiked
+                                        ? Colors.red.shade300
+                                        : Colors.white,
+                                    size: Sizes.size28,
+                                  ),
+                                  Gaps.v10,
+                                  Text(
+                                    S.of(context).likeCount(data.likesCount),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => _onCommentsTap(context),
+                              child: VideoButton(
+                                  icon: FontAwesomeIcons.solidMessage,
+                                  text: S
+                                      .of(context)
+                                      .likeCount(widget.videoData.comments)),
+                            ),
+                            VideoButton(
+                                icon: FontAwesomeIcons.share, text: "Share"),
+                            VideoButton(
+                              icon: FontAwesomeIcons.music,
+                              text: "Music",
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+          error: (error, stack) => Center(
+            child: Text(
+              "Error: $error",
+              style: const TextStyle(color: Colors.black),
+            ),
+          ),
+        );
   }
 }

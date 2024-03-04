@@ -33,7 +33,7 @@ class VideoRepository {
     }
   }
 
-  Future<void> toggleLikeVideo(String videoId, String userId) async {
+  Future<bool> toggleLikeVideo(String videoId, String userId) async {
     final query = _db.collection("likes").doc("${videoId}000$userId");
 
     final like = await query.get();
@@ -42,8 +42,10 @@ class VideoRepository {
       await query.set({
         "createdAt": DateTime.now().millisecondsSinceEpoch,
       });
+      return false;
     } else {
       await query.delete();
+      return true;
     }
   }
 
@@ -58,11 +60,7 @@ class VideoRepository {
     final videoQuery = _db.collection("videos").doc(videoId);
     final videoSnapshot = await videoQuery.get();
     final videoData = videoSnapshot.data();
-    if (videoData == null) {
-      return 0;
-    } else {
-      return videoData['likesCount'] ?? 0;
-    }
+    return videoData!['likes'] ?? 0;
   }
 }
 
