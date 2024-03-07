@@ -1,5 +1,6 @@
 import 'package:TikTok/features/inbox/models/message_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MessagesRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -10,3 +11,5 @@ class MessagesRepository {
         );
   }
 }
+
+final messagesRepo = Provider((ref) => MessagesRepository());
