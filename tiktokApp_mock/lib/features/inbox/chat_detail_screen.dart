@@ -1,10 +1,12 @@
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
+import 'package:TikTok/features/inbox/view_models/messages_view_model.dart';
 import 'package:TikTok/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class ChatDetailScreen extends StatefulWidget {
+class ChatDetailScreen extends ConsumerStatefulWidget {
   static const String routeName = "chatDetail";
   static const String routeURL = ":chatId";
 
@@ -12,10 +14,10 @@ class ChatDetailScreen extends StatefulWidget {
   const ChatDetailScreen({super.key, required this.chatId});
 
   @override
-  State<ChatDetailScreen> createState() => _ChatDetailScreenState();
+  ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
 }
 
-class _ChatDetailScreenState extends State<ChatDetailScreen> {
+class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -31,15 +33,21 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     _focusNode.unfocus();
   }
 
-  void _sendTextPressed() {
-    if (_textEditingController.text.isNotEmpty) {
-      // 메시지 전송
-      _textEditingController.clear();
+//! chatRoomId로 전환해야함(chatroomId를 제외하고 firebase에 정상적으로 등록됨)
+  void _onSendPressed() {
+    final text = _textEditingController.text;
+    if (text.isEmpty) {
+      return;
     }
+    ref
+        .read(messagesProvider(widget.chatId).notifier)
+        .sendMessage(text, widget.chatId);
+    _textEditingController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(messagesProvider(widget.chatId)).isLoading;
     return Scaffold(
       appBar: AppBar(
         title: ListTile(
@@ -246,9 +254,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
-                          onPressed: _sendTextPressed,
+                          onPressed: isLoading ? null : _onSendPressed,
                           icon: FaIcon(
-                            FontAwesomeIcons.paperPlane,
+                            isLoading
+                                ? FontAwesomeIcons.spinner
+                                : FontAwesomeIcons.paperPlane,
                             color: isDarkMode(context)
                                 ? Colors.grey.shade200
                                 : Colors.grey.shade900,
