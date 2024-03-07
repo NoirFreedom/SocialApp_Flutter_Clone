@@ -24,25 +24,17 @@ class VideoPostViewModel extends FamilyAsyncNotifier<VideoPostStatus, String> {
     return state.value!;
   }
 
-  Future<int> toggleLikeVideo() async {
+  Future<void> toggleLikeVideo() async {
     final user = ref.read(authRepo).user;
-    bool isLiked = await _videoRepository.toggleLikeVideo(_videoId, user!.uid);
-    int likesCount = await ref.read(videoRepo).fetchLikesCount(_videoId);
-
-    //! 수정 필요함(위 변수명과 아래 변수명이 일치하지 않으며, 토글기능을 수행중인지 확인 필요)
-    if (isLiked) {
-      final likesCount0 = likesCount + 1;
-      return likesCount0;
-    } else {
-      if (_likeCounts > 0) {
-        final likesCount0 = likesCount - 1;
-        return likesCount0;
-      }
-    }
-
+    await _videoRepository.toggleLikeVideo(_videoId, user!.uid);
     state = AsyncValue.data(
-        VideoPostStatus(isLiked: _isLiked, likesCount: _likeCounts));
-    return state.value!.likesCount;
+      VideoPostStatus(
+        isLiked: !state.value!.isLiked, // 현재 상태의 반대로 설정
+        likesCount: state.value!.isLiked
+            ? state.value!.likesCount - 1
+            : state.value!.likesCount + 1, // 좋아요 상태에 따라 수 조정
+      ),
+    );
   }
 }
 
