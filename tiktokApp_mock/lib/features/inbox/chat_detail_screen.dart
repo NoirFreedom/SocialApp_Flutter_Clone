@@ -31,6 +31,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     _focusNode.unfocus();
   }
 
+  void _sendTextPressed() {
+    if (_textEditingController.text.isNotEmpty) {
+      // 메시지 전송
+      _textEditingController.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,7 +206,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     top: Sizes.size10, left: Sizes.size20, right: Sizes.size20),
                 color: isDarkMode(context)
                     ? Colors.grey.shade800
-                    : Colors.grey.shade200,
+                    : Colors.grey.shade100,
                 child: SizedBox(
                   height: Sizes.size52,
                   child: Row(
@@ -231,21 +238,24 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       ),
                       Gaps.h16,
                       Container(
-                        padding: const EdgeInsets.all(Sizes.size14),
+                        padding: const EdgeInsets.all(Sizes.size3),
                         decoration: BoxDecoration(
                           color: isDarkMode(context)
                               ? Colors.grey.shade900
                               : Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        child: FaIcon(
-                          FontAwesomeIcons.paperPlane,
-                          color: isDarkMode(context)
-                              ? Colors.grey.shade200
-                              : Colors.grey.shade900,
-                          size: Sizes.size18,
+                        child: IconButton(
+                          onPressed: _sendTextPressed,
+                          icon: FaIcon(
+                            FontAwesomeIcons.paperPlane,
+                            color: isDarkMode(context)
+                                ? Colors.grey.shade200
+                                : Colors.grey.shade900,
+                            size: Sizes.size20,
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
