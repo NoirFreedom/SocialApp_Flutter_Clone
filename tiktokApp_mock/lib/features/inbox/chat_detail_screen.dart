@@ -1,5 +1,6 @@
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
+import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
 import 'package:TikTok/features/inbox/view_models/messages_view_model.dart';
 import 'package:TikTok/utils.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     _focusNode.unfocus();
   }
 
-//! chatRoomId로 전환해야함(chatroomId를 제외하고 firebase에 정상적으로 등록됨)
+//! ChatScreen에서 chatRoomId를 받아야 함(chatroomId를 제외하고 firebase에 정상적으로 등록됨)
   void _onSendPressed() {
     final text = _textEditingController.text;
     if (text.isEmpty) {
@@ -106,106 +107,127 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         onTap: _unfocusTextField,
         child: Stack(
           children: [
-            ListView.separated(
-              itemBuilder: (context, index) {
-                var isMine = index % 2 == 0;
+            ref.watch(chatProvider).when(
+                  data: (data) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) {
+                        final message = data[index];
+                        final isMine =
+                            message.userId == ref.watch(authRepo).user!.uid;
 
-                if (isMine) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: Sizes.size16, vertical: Sizes.size8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                        if (isMine) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: Sizes.size16,
+                                vertical: Sizes.size8),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: Sizes.size8,
+                                            vertical: Sizes.size4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius: const BorderRadius.only(
+                                              topLeft:
+                                                  Radius.circular(Sizes.size8),
+                                              topRight:
+                                                  Radius.circular(Sizes.size8),
+                                              bottomLeft:
+                                                  Radius.circular(Sizes.size8)),
+                                        ),
+                                        child: Text(
+                                          message.text,
+                                          style: TextStyle(
+                                              fontSize: Sizes.size16,
+                                              color: Colors.grey.shade900),
+                                        ),
+                                      ),
+                                      Gaps.v4,
+                                      Text(
+                                        "12:0$index PM",
+                                        style: const TextStyle(
+                                            fontSize: Sizes.size12,
+                                            color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Gaps.h16,
+                                const CircleAvatar(
+                                  foregroundImage: NetworkImage(
+                                      "https://images.unsplash.com/photo-1528892952291-009c663ce843?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTZ8fHBlcnNvbnxlbnwwfHwwfHx8MA%3D%3D"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Sizes.size16, vertical: Sizes.size8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: Sizes.size8,
-                                    vertical: Sizes.size4),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(Sizes.size8),
-                                      topRight: Radius.circular(Sizes.size8),
-                                      bottomLeft: Radius.circular(Sizes.size8)),
-                                ),
-                                child: Text(
-                                  "Hey",
-                                  style: TextStyle(
-                                      fontSize: Sizes.size16,
-                                      color: Colors.grey.shade900),
-                                ),
+                              const CircleAvatar(
+                                foregroundImage: NetworkImage(
+                                    "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlcnNvbnxlbnwwfDF8MHx8fDA%3D"),
                               ),
-                              Gaps.v4,
-                              Text(
-                                "12:0$index PM",
-                                style: const TextStyle(
-                                    fontSize: Sizes.size12, color: Colors.grey),
+                              Gaps.h16,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: Sizes.size8,
+                                          vertical: Sizes.size4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft:
+                                                Radius.circular(Sizes.size8),
+                                            topRight:
+                                                Radius.circular(Sizes.size8),
+                                            bottomRight:
+                                                Radius.circular(Sizes.size8)),
+                                      ),
+                                      child: Text(
+                                        message.text,
+                                        style: TextStyle(
+                                            fontSize: Sizes.size16,
+                                            color: Colors.grey.shade900),
+                                      ),
+                                    ),
+                                    Gaps.v4,
+                                    Text(
+                                      "12:0$index PM",
+                                      style: const TextStyle(
+                                          fontSize: Sizes.size12,
+                                          color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        Gaps.h16,
-                        const CircleAvatar(
-                          foregroundImage: NetworkImage(
-                              "https://images.unsplash.com/photo-1528892952291-009c663ce843?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTZ8fHBlcnNvbnxlbnwwfHwwfHx8MA%3D%3D"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: Sizes.size16, vertical: Sizes.size8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const CircleAvatar(
-                        foregroundImage: NetworkImage(
-                            "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlcnNvbnxlbnwwfDF8MHx8fDA%3D"),
-                      ),
-                      Gaps.h16,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Sizes.size8,
-                                  vertical: Sizes.size4),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(Sizes.size8),
-                                    topRight: Radius.circular(Sizes.size8),
-                                    bottomRight: Radius.circular(Sizes.size8)),
-                              ),
-                              child: Text(
-                                "what's up?",
-                                style: TextStyle(
-                                    fontSize: Sizes.size16,
-                                    color: Colors.grey.shade900),
-                              ),
-                            ),
-                            Gaps.v4,
-                            Text(
-                              "12:0$index PM",
-                              style: const TextStyle(
-                                  fontSize: Sizes.size12, color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                        );
+                      },
+                      separatorBuilder: (context, index) => Gaps.h10,
+                      itemCount: data.length,
+                    );
+                  },
+                  error: (error, stackTrace) => Center(
+                    child: Text(error.toString()),
                   ),
-                );
-              },
-              separatorBuilder: (context, index) => Gaps.h10,
-              itemCount: 10,
-            ),
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
             Positioned(
               bottom: 0,
               width: MediaQuery.of(context).size.width,

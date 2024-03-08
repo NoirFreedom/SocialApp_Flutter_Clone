@@ -40,6 +40,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
     }
   }
 
+//! chatroom id를 인자로 받아야 함
   void _onChatTap(int index) {
     context.pushNamed(ChatDetailScreen.routeName, params: {"chatId": "$index"});
   }
