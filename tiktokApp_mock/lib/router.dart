@@ -5,6 +5,7 @@ import 'package:TikTok/features/authentication/sign_up_sceen.dart';
 import 'package:TikTok/features/inbox/views/activity_screen.dart';
 import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
 import 'package:TikTok/features/inbox/views/chats_screen.dart';
+import 'package:TikTok/features/inbox/views/userList_screen.dart';
 import 'package:TikTok/features/onboarding/interests_screen.dart';
 import 'package:TikTok/features/users/views/user_profile_edit.dart';
 import 'package:TikTok/features/videos/views/video_recording_screen.dart';
@@ -77,6 +78,11 @@ final routerProvider = Provider(
               },
             ),
           ],
+        ),
+        GoRoute(
+          path: UserListScreen.routeURL,
+          name: UserListScreen.routeName,
+          builder: (context, state) => const UserListScreen(),
         ),
         GoRoute(
           path: VideoRecordingScreen.routeURL,

@@ -1,5 +1,7 @@
 import 'package:TikTok/constants/sizes.dart';
 import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
+import 'package:TikTok/features/inbox/views/userList_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,11 +21,19 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   final Duration _duration = const Duration(milliseconds: 300);
 
+  late final Stream<QuerySnapshot> _chatroomsStream;
+
+//! 초기화 필요
+  @override
+  void initState() {
+    super.initState();
+    _chatroomsStream =
+        FirebaseFirestore.instance.collection('chat_rooms').snapshots();
+  }
+
+//! 대화방 추가
   void _addItem() {
-    if (_key.currentState != null) {
-      _key.currentState!.insertItem(_items.length, duration: _duration);
-      _items.add(_items.length);
-    }
+    context.pushNamed(UserListScreen.routeName);
   }
 
   void _deleteItem(int index) {
@@ -84,23 +94,39 @@ class _ChatsScreenState extends State<ChatsScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: _addItem,
+            onPressed: _addItem, // 새 대화 추가 기능 구현 필요
           ),
         ],
       ),
-      body: AnimatedList(
-        key: _key,
-        initialItemCount: 0,
-        padding: const EdgeInsets.symmetric(vertical: Sizes.size10),
-        itemBuilder: (context, index, animation) {
-          return FadeTransition(
-            key: UniqueKey(),
-            opacity: animation,
-            child: SizeTransition(
-              sizeFactor: animation,
-              child: _makeTile(index),
-            ),
-          );
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _chatroomsStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return const Center(child: CircularProgressIndicator());
+            default:
+              return ListView(
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage:
+                          NetworkImage(data['profileImageUrl'] ?? '기본 이미지 URL'),
+                    ),
+                    title: Text(data['name'] ?? '이름 없음'),
+                    subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
+                    onTap: () {
+                      // 대화방을 탭했을 때 상세 화면으로 이동하도록 구현
+                    },
+                  );
+                }).toList(),
+              );
+          }
         },
       ),
     );
