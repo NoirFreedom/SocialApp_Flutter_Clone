@@ -1,5 +1,5 @@
 import 'package:TikTok/constants/sizes.dart';
-import 'package:TikTok/features/inbox/chat_detail_screen.dart';
+import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

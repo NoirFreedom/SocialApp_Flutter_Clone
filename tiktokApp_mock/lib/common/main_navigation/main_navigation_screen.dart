@@ -1,4 +1,4 @@
-import 'package:TikTok/features/inbox/inbox_screen.dart';
+import 'package:TikTok/features/inbox/views/inbox_screen.dart';
 import 'package:TikTok/features/users/views/user_profile_screen.dart';
 import 'package:TikTok/features/videos/views/video_recording_screen.dart';
 import 'package:TikTok/features/videos/views/video_timeline_screen.dart';
