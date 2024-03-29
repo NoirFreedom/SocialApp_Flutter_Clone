@@ -26,35 +26,15 @@ class _UserListScreenState extends State<UserListScreen> {
       appBar: AppBar(
         title: const Text("User List"),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _userList,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
-            default:
-              return ListView(
-                children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                  Map<String, dynamic> data =
-                      document.data()! as Map<String, dynamic>;
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(data['profileImageUrl'] ?? '기본 이미지 URL'),
-                    ),
-                    title: Text(data['name'] ?? '이름 없음'),
-                    subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
-                    onTap: () {
-                      // 대화방을 탭했을 때 상세 화면으로 이동하도록 구현
-                    },
-                  );
-                }).toList(),
-              );
-          }
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text("User $index"),
+            onTap: () {
+              // Navigate to chat screen
+            },
+          );
         },
       ),
     );
