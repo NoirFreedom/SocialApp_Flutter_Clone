@@ -3,7 +3,7 @@ import 'package:TikTok/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
-import 'package:TikTok/features/authentication/email_screen.dart';
+import 'package:TikTok/features/authentication/views/email_screen.dart';
 import 'package:TikTok/features/authentication/widgets/form_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

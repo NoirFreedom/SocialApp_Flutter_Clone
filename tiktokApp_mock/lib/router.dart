@@ -1,7 +1,7 @@
 import 'package:TikTok/common/main_navigation/main_navigation_screen.dart';
-import 'package:TikTok/features/authentication/login_screen.dart';
+import 'package:TikTok/features/authentication/views/login_screen.dart';
 import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
-import 'package:TikTok/features/authentication/sign_up_sceen.dart';
+import 'package:TikTok/features/authentication/views/sign_up_sceen.dart';
 import 'package:TikTok/features/inbox/views/activity_screen.dart';
 import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
 import 'package:TikTok/features/inbox/views/chats_screen.dart';

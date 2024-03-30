@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
-import 'package:TikTok/features/discover/discover_screen.dart';
+import 'package:TikTok/features/discover/views/discover_screen.dart';
 import 'package:TikTok/common/main_navigation/widgets/nav_tab.dart';
 import 'package:TikTok/common/main_navigation/widgets/post_video_button.dart';
 import 'package:go_router/go_router.dart';

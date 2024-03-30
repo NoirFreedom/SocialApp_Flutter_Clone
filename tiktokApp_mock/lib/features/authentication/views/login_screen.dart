@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
-import 'package:TikTok/features/authentication/login_form_screen.dart';
+import 'package:TikTok/features/authentication/views/login_form_screen.dart';
 
 import 'package:TikTok/features/authentication/widgets/auth_button.dart';
 import 'package:go_router/go_router.dart';
