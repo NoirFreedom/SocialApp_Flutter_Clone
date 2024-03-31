@@ -1,7 +1,7 @@
 import 'package:TikTok/constants/breakpoints.dart';
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
-import 'package:TikTok/features/settings/settings_screen.dart';
+import 'package:TikTok/features/settings/views/settings_screen.dart';
 import 'package:TikTok/features/users/view_models/users_view_model.dart';
 import 'package:TikTok/features/users/views/user_profile_edit.dart';
 import 'package:TikTok/features/users/views/widgets/avatar.dart';

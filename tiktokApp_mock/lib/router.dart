@@ -1,4 +1,4 @@
-import 'package:TikTok/common/main_navigation/main_navigation_screen.dart';
+import 'package:TikTok/common/%08views/main_navigation_screen.dart';
 import 'package:TikTok/features/authentication/views/login_screen.dart';
 import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
 import 'package:TikTok/features/authentication/views/sign_up_sceen.dart';

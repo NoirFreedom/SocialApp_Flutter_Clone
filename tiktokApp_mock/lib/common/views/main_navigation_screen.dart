@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
 import 'package:TikTok/features/discover/views/discover_screen.dart';
-import 'package:TikTok/common/main_navigation/widgets/nav_tab.dart';
-import 'package:TikTok/common/main_navigation/widgets/post_video_button.dart';
+import 'package:TikTok/common/%08views/widgets/nav_tab.dart';
+import 'package:TikTok/common/%08views/widgets/post_video_button.dart';
 import 'package:go_router/go_router.dart';
 
 class MainNavigationScreen extends StatefulWidget {
