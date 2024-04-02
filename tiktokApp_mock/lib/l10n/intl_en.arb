@@ -25,7 +25,7 @@
   "signUpWithApple": "Sign up with Apple",
   "signUpWithGoogle": "Sign up with Google",
   "alreadyHaveAnAccount": "Already have an account?",
-  "logIn": "Log in {gender, select, male{sir} female{madam} other{plz}}",
+  "logIn": "Log in {gender, select, male{sir} female{madam} other{}}",
   "likeCount": "{totalCount}",
   "@likeCount": {
     "description": "Number of likes",

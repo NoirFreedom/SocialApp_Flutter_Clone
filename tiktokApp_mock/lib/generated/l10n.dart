@@ -133,7 +133,7 @@ class S {
   /// `Log in {gender, select, male{sir} female{madam} other{plz}}`
   String logIn(String gender) {
     return Intl.message(
-      'Log in ${Intl.gender(gender, male: 'sir', female: 'madam', other: 'plz')}',
+      'Log in ${Intl.gender(gender, male: 'sir', female: 'madam', other: '')}',
       name: 'logIn',
       desc: '',
       args: [gender],
@@ -148,7 +148,7 @@ class S {
     final String totalCountString = totalCountNumberFormat.format(totalCount);
 
     return Intl.message(
-      '$totalCountString',
+      totalCountString,
       name: 'likeCount',
       desc: 'Number of likes',
       args: [totalCountString],
