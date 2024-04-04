@@ -18,18 +18,6 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
   Map<String, String> formData = {};
   bool _obscureText = true;
 
-  // String? _isIdEmail(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return "Email is required";
-  //   }
-  //   final regExp = RegExp(
-  //       r"^[a-zA-Z0-9!#$%^&*()_+\-={}|[\];':,./<>?]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-  //   if (!regExp.hasMatch(value)) {
-  //     return "Invalid email format.";
-  //   }
-  //   return null;
-  // }
-
   void _onScaffoldTap() {
     FocusScope.of(context).unfocus();
   }
