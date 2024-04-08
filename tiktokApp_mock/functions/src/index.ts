@@ -39,7 +39,7 @@ export const onVideoCreated = functions.firestore
 });
 
 
-// '좋아요'를 눌렀을 때
+// '좋아요'를 눌렀을 때(생성)
 export const onLikedCreated = functions.firestore
 .document("likes/{likeId}")
 .onCreate(async(snapshot, context) => {
@@ -53,6 +53,7 @@ export const onLikedCreated = functions.firestore
     })
 });
 
+// '좋아요'를 눌렀을 때(삭제)
 export const onLikedRemoved = functions.firestore
 .document("likes/{likeId}")
 .onDelete(async(snapshot, context) => {
