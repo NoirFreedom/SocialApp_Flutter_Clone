@@ -23,7 +23,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   late final Stream<QuerySnapshot> _chatroomsStream;
 
-//! 초기화 필요
+//! 초기화 필요(대화방 목록을 가져오는 코드 필요)
   @override
   void initState() {
     super.initState();
@@ -31,7 +31,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
         FirebaseFirestore.instance.collection('chat_rooms').snapshots();
   }
 
-//! 대화방 추가
+//! 대화방 추가(새 대화 추가 기능 구현 필요)
   void _addItem() {
     context.pushNamed(UserListScreen.routeName);
   }
