@@ -1,4 +1,3 @@
-import 'package:TikTok/constants/sizes.dart';
 import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
 import 'package:TikTok/features/inbox/views/userList_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
