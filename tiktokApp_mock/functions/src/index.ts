@@ -11,15 +11,15 @@ export const onVideoCreated = functions.firestore
     const spawn = require('child-process-promise').spawn;
     const video = snapshot.data();
     await spawn("ffmpeg",[
-        "-i",
-        video.videoUrl,
-        "-ss",
-        "00:00:01.000",
-        "-vframes",
-        "1",
-        "-vf",
-        "scale=150:-1",
-        `/tmp/${snapshot.id}.jpg`
+        "-i", // 입력 파일
+        video.videoUrl, // 비디오 URL
+        "-ss", // 스냅샷을 찍을 시간
+        "00:00:01.000", // 1초부터
+        "-vframes", // 비디오 프레임 추출
+        "1", // 1프레임만 추출
+        "-vf", // 비디오 필터
+        "scale=150:-1", // 150픽셀로 줄임
+        `/tmp/${snapshot.id}.jpg` // 저장할 파일명
     ]);
     const storage = admin.storage();
     const [file, _] = await storage.bucket().upload(`/tmp/${snapshot.id}.jpg`, {
