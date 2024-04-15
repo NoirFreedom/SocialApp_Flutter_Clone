@@ -19,7 +19,7 @@ export const onVideoCreated = functions.firestore
         "1", // 1프레임만 추출
         "-vf", // 비디오 필터
         "scale=150:-1", // 150픽셀로 줄임
-        `/tmp/${snapshot.id}.jpg` // 저장할 파일명
+        `/tmp/${snapshot.id}.jpg` // 임시저장 파일명(구글 클라우드 서버에서 코드가 동작할 동안 임시 파일 저장소 'tmp'에 저장됨)
     ]);
     const storage = admin.storage();
     const [file, _] = await storage.bucket().upload(`/tmp/${snapshot.id}.jpg`, {
