@@ -29,19 +29,19 @@ export const onVideoCreated = functions.firestore // 파이어베이스 클라�
     await snapshot.ref.update({thumbnailUrl: file.publicUrl()}); // 생성된 비디오 도큐먼트에 썸네일 URL 추가
     const db = admin.firestore();
 
-    await db.collection("users")
-    .doc(video.creatorUid)
-    .collection("videos")
-    .doc(snapshot.id)
+    await db.collection("users") // 유저의 비디오 컬렉션에 썸네일 URL 추가
+    .doc(video.creatorUid) // 유저의 UID
+    .collection("videos") // 비디오 컬렉션
+    .doc(snapshot.id) // 비디오 ID
     .set({
         thumbnailUrl: file.publicUrl(), 
-        videoId: snapshot.id});
+        videoId: snapshot.id}); // 썸네일 URL과 비디오 ID 추가
 });
 
 
 // '좋아요'를 눌렀을 때(생성)
 export const onLikedCreated = functions.firestore
-.document("likes/{likeId}")
+.document("likes/{likeId}") // 'likes' 컬렉션의 도큐먼트 생성시
 .onCreate(async(snapshot, context) => {
     const db = admin.firestore();
     const [videoId, userId] = snapshot.id.split("000"); // 좋아요 도큐먼트 ID에서 비디오 ID와 유저 ID 추출
@@ -55,13 +55,13 @@ export const onLikedCreated = functions.firestore
 
 // '좋아요'를 눌렀을 때(삭제)
 export const onLikedRemoved = functions.firestore
-.document("likes/{likeId}")
+.document("likes/{likeId}") // 'likes' 컬렉션의 도큐먼트 삭제시
 .onDelete(async(snapshot, context) => {
-    const db = admin.firestore();
-    const [videoId, userId] = snapshot.id.split("000");
+    const db = admin.firestore(); // 파이어베이스 관리자
+    const [videoId, userId] = snapshot.id.split("000"); // 좋아요 도큐먼트 ID에서 비디오 ID와 유저 ID 추출
 
-    await db.collection("users").doc(userId).collection("likes").doc(videoId).delete();
+    await db.collection("users").doc(userId).collection("likes").doc(videoId).delete(); // 유저의 'likes' 컬렉션에서 좋아요한 비디오 삭제
     await db.collection("videos").doc(videoId).update({
-        likes:admin.firestore.FieldValue.increment(-1)
+        likes:admin.firestore.FieldValue.increment(-1) // 비디오의 'likes' 필드를 1 감소
     })
 });
