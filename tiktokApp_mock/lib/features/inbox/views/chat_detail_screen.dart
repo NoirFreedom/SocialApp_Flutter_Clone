@@ -107,7 +107,8 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         onTap: _unfocusTextField,
         child: Stack(
           children: [
-            ref.watch(chatProvider).when(
+            ref.watch(chatProvider("")).when(
+                  //! chatroomId를 받아와야 함
                   data: (data) {
                     return ListView.separated(
                       itemBuilder: (context, index) {

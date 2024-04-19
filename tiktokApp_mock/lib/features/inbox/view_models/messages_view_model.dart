@@ -14,7 +14,7 @@ class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
     _messagesRepository = ref.read(messagesRepo);
   }
 
-//! chatroom id를 인자로 받아야 함
+//! chatRoomId를 받아오도록 수정
   Future<void> sendMessage(String text, String chatRoomId) async {
     final user = ref.read(authRepo).user;
     state = const AsyncLoading();
@@ -23,7 +23,7 @@ class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
         final message = MessageModel(
           text: text,
           userId: user!.uid,
-          chatRoomId: "Fcinkw8THtQAQQrSnsaV",
+          chatRoomId: chatRoomId,
           createdAt: DateTime.now().millisecondsSinceEpoch,
         );
         _messagesRepository.sendMessage(message, "Fcinkw8THtQAQQrSnsaV");
@@ -37,12 +37,14 @@ final messagesProvider =
   () => MessagesViewModel(),
 );
 
-//! chat_rooms의 id가 들어가도록 수정해야 함
-final chatProvider = StreamProvider.autoDispose<List<MessageModel>>((ref) {
+//! chat_rooms의 id가 들어가도록 수정
+final chatProvider = StreamProvider.autoDispose
+    .family<List<MessageModel>, String>((ref, chatroomId) {
+  // autoDispose를 사용하여 채팅방을 나갔을 때 데이터를 삭제하도록 함
   final db = FirebaseFirestore.instance;
   return db
       .collection("chat_rooms")
-      .doc("Fcinkw8THtQAQQrSnsaV")
+      .doc(chatroomId)
       .collection("texts")
       .orderBy("createdAt")
       .snapshots()
