@@ -11,7 +11,7 @@ class ChatRoomsRepository {
     return "${uids[0]}_${uids[1]}";
   }
 
-//! chatroom id를 인자로 받아야 함 (Firebase Firestore에 저장할 때 chatroom id를 받아야 함)
+  // 채팅방을 생성하는 코드
   Future<void> createChatroom(String uid, String friendUid) async {
     String chatRoomId = createChatroomId(uid, friendUid);
     DocumentReference chatRoomRef =
@@ -26,7 +26,8 @@ class ChatRoomsRepository {
     }
   }
 
-  Future<List<Map<String, dynamic>>> loadFriends() async {
+  // '+' 버튼을 눌렀을 때 친구 목록을 불러오는 코드
+  Future<List<Map<String, dynamic>>> getUsersInfo() async {
     final users = await _db.collection("users").get();
     return users.docs.map((doc) => doc.data()).toList();
   }
@@ -36,4 +37,4 @@ class ChatRoomsRepository {
   Future<void> deleteChatroom(String chatroomId) async {}
 }
 
-final chatRoomsRepo = Provider((ref) => ChatRoomsRepository());
+final chatRoomsProvider = Provider((ref) => ChatRoomsRepository());
