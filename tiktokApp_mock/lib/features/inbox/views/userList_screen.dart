@@ -1,27 +1,22 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:TikTok/features/inbox/view_models/get_users_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UserListScreen extends StatefulWidget {
+class UserListScreen extends ConsumerStatefulWidget {
   static const String routeName = "userList";
   static const String routeURL = "/userList";
   const UserListScreen({super.key});
 
   @override
-  State<UserListScreen> createState() => _UserListScreenState();
+  ConsumerState<UserListScreen> createState() => _UserListScreenState();
 }
 
-class _UserListScreenState extends State<UserListScreen> {
-  late final Stream<QuerySnapshot> _userList;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _userList = FirebaseFirestore.instance.collection('users').snapshots();
-  }
-
+class _UserListScreenState extends ConsumerState<UserListScreen> {
   @override
   Widget build(BuildContext context) {
+    final users = ref.read(getUsersProvider);
+    print("user: $users");
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("User List"),
