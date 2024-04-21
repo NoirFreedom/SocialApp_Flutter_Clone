@@ -1,29 +1,28 @@
 import 'dart:async';
 import 'package:TikTok/features/inbox/repos/chatrooms_repo.dart';
+import 'package:TikTok/features/users/models/user_profile_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GetUsersViewModel extends AsyncNotifier<List<Map<String, dynamic>>> {
-  late final ChatRoomsRepository chatRoomsRepo;
+class GetUsersViewModel extends AsyncNotifier<List<UserProfileModel>> {
+  late final ChatRoomsRepository _chatRoomsRepo;
 
   @override
-  FutureOr<AsyncValue<List<Map<String, dynamic>>>> build() {
-    chatRoomsRepo = ref.read(chatRoomsProvider);
-    //! 값 리턴해야함
-  }
-
-  Future<void> getUsers() async {
-    state = const AsyncLoading();
+  FutureOr<List<UserProfileModel>> build() async {
+    _chatRoomsRepo = ref.read(chatRoomsProvider);
     try {
-      final users = await chatRoomsRepo.getUsersInfo();
-      state = AsyncValue.data(users);
+      final result = await _chatRoomsRepo.getUsersInfo();
+      final users = result.docs
+          .map((doc) => UserProfileModel.fromJson(doc.data()))
+          .toList();
+      print("users: $users");
+      return users;
     } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+      throw Exception('Failed to get users: ${e.toString()}');
     }
-    print("state: $state");
   }
 }
 
 final getUsersProvider =
-    AsyncNotifierProvider<GetUsersViewModel, List<Map<String, dynamic>>>(
+    AsyncNotifierProvider<GetUsersViewModel, List<UserProfileModel>>(
   () => GetUsersViewModel(),
 );
