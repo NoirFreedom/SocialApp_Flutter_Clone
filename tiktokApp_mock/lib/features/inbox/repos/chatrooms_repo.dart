@@ -26,9 +26,9 @@ class ChatRoomsRepository {
   }
 
   // '+' 버튼을 눌렀을 때 친구 목록을 불러오는 코드
-  Future<List<Map<String, dynamic>>> getUsersInfo() async {
-    final users = await _db.collection("users").get();
-    return users.docs.map((doc) => doc.data()).toList();
+  Future<QuerySnapshot<Map<String, dynamic>>> getUsersInfo() async {
+    final query = _db.collection("users");
+    return query.get();
   }
 
   Future<void> loadChatroom(String chatroomId) async {}
