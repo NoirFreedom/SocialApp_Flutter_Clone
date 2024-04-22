@@ -11,27 +11,32 @@ class UserListScreen extends ConsumerStatefulWidget {
   ConsumerState<UserListScreen> createState() => _UserListScreenState();
 }
 
+//! 유저 목록 올바르게 불러오는지 확인 필요
 class _UserListScreenState extends ConsumerState<UserListScreen> {
   @override
   Widget build(BuildContext context) {
-    final users = ref.read(getUsersProvider);
-    print("user: $users");
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("User List"),
-      ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text("User $index"),
-            onTap: () {
-              // Navigate to chat screen
-            },
+    return ref.watch(getUsersProvider).when(
+        loading: () =>
+            const Center(child: CircularProgressIndicator.adaptive()),
+        error: (error, stackTrace) => Center(child: Text("$error")),
+        data: (users) {
+          print(users);
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("User List"),
+            ),
+            body: ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text("User $index"),
+                  onTap: () {
+                    // Navigate to chat screen
+                  },
+                );
+              },
+            ),
           );
-        },
-      ),
-    );
+        });
   }
 }
