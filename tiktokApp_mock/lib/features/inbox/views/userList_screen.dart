@@ -1,3 +1,4 @@
+import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
 import 'package:TikTok/features/inbox/view_models/get_users_view_model.dart';
 import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,21 @@ class UserListScreen extends ConsumerStatefulWidget {
 }
 
 class _UserListScreenState extends ConsumerState<UserListScreen> {
-  void createChatroomWith(String uid) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ChatDetailScreen(chatId: uid)));
+  void createChatroomWith(String uid, String friendUid, String friendName) {
+    ref.read(getUsersProvider.notifier).createChatroom(uid, friendUid);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChatDetailScreen(
+                  chatId: uid,
+                  friendName: friendName,
+                )));
   }
 
   @override
   Widget build(BuildContext context) {
+    final userId = ref.read(authRepo).user!.uid;
+
     return ref.watch(getUsersProvider).when(
         loading: () =>
             const Center(child: CircularProgressIndicator.adaptive()),
@@ -35,7 +44,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                 return ListTile(
                   title: Text(users[index].name),
                   onTap: () {
-                    createChatroomWith(users[index].uid);
+                    createChatroomWith(
+                        userId, users[index].uid, users[index].name);
                   },
                 );
               },
