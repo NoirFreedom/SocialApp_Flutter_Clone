@@ -19,6 +19,18 @@ class GetUsersViewModel extends AsyncNotifier<List<UserProfileModel>> {
       throw Exception('Failed to get users: ${e.toString()}');
     }
   }
+
+  createChatroomId(String uid, String friendUid) {
+    List<String> uids = [uid, friendUid];
+    uids.sort();
+    return "${uids[0]}_${uids[1]}";
+  }
+
+  Future<void> createChatroom(String uid, String friendUid) async {
+    ref
+        .read(chatRoomsProvider)
+        .createChatroom(uid, friendUid, createChatroomId(uid, friendUid));
+  }
 }
 
 final getUsersProvider =
