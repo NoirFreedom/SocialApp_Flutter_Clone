@@ -92,7 +92,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: _addItem, //! 새 대화 추가 기능 구현 필요
+            onPressed: _addItem,
           ),
         ],
       ),
