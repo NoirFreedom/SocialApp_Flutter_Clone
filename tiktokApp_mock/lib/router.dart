@@ -71,8 +71,10 @@ final routerProvider = Provider(
               name: ChatDetailScreen.routeName,
               builder: (context, state) {
                 final chatId = state.params["chatId"]!;
+                final friendName = state.params["friendName"]!;
                 return ChatDetailScreen(
                   chatId: chatId,
+                  friendName: friendName,
                 );
               },
             ),
