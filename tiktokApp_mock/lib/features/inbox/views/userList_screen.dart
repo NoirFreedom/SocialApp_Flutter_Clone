@@ -1,4 +1,5 @@
 import 'package:TikTok/features/inbox/view_models/get_users_view_model.dart';
+import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,7 +13,10 @@ class UserListScreen extends ConsumerStatefulWidget {
 }
 
 class _UserListScreenState extends ConsumerState<UserListScreen> {
-  void createChatroom() {}
+  void createChatroomWith(String uid) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ChatDetailScreen(chatId: uid)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                 return ListTile(
                   title: Text(users[index].name),
                   onTap: () {
-                    //! chatroom으로 이동
+                    createChatroomWith(users[index].uid);
                   },
                 );
               },
