@@ -11,8 +11,9 @@ class UserListScreen extends ConsumerStatefulWidget {
   ConsumerState<UserListScreen> createState() => _UserListScreenState();
 }
 
-//! 유저 목록 올바르게 불러오는지 확인 필요
 class _UserListScreenState extends ConsumerState<UserListScreen> {
+  void createChatroom() {}
+
   @override
   Widget build(BuildContext context) {
     return ref.watch(getUsersProvider).when(
@@ -20,7 +21,6 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
             const Center(child: CircularProgressIndicator.adaptive()),
         error: (error, stackTrace) => Center(child: Text("$error")),
         data: (users) {
-          print(users);
           return Scaffold(
             appBar: AppBar(
               title: const Text("User List"),
@@ -29,9 +29,9 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
               itemCount: users.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text("User $index"),
+                  title: Text(users[index].name),
                   onTap: () {
-                    // Navigate to chat screen
+                    //! chatroom으로 이동
                   },
                 );
               },

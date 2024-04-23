@@ -14,7 +14,6 @@ class GetUsersViewModel extends AsyncNotifier<List<UserProfileModel>> {
       final users = result.docs
           .map((doc) => UserProfileModel.fromJson(doc.data()))
           .toList();
-      print("users: $users");
       return users;
     } catch (e) {
       throw Exception('Failed to get users: ${e.toString()}');
