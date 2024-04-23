@@ -12,7 +12,9 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
   static const String routeURL = ":chatId";
 
   final String chatId;
-  const ChatDetailScreen({super.key, required this.chatId});
+  final String friendName;
+  const ChatDetailScreen(
+      {super.key, required this.chatId, required this.friendName});
 
   @override
   ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
@@ -78,7 +80,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
             ],
           ),
           title: Text(
-            "User Name (${widget.chatId})",
+            widget.friendName,
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           subtitle: const Text("Active Now"),
