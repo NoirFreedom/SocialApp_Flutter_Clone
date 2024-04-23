@@ -4,15 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ChatRoomsRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  createChatroomId(String uid, String friendUid) {
-    List<String> uids = [uid, friendUid];
-    uids.sort();
-    return "${uids[0]}_${uids[1]}";
-  }
-
   // 채팅방을 생성하는 코드
-  Future<void> createChatroom(String uid, String friendUid) async {
-    String chatRoomId = createChatroomId(uid, friendUid);
+  Future<void> createChatroom(
+      String uid, String friendUid, String chatRoomId) async {
     DocumentReference chatRoomRef =
         _db.collection("chat_rooms").doc(chatRoomId);
 
