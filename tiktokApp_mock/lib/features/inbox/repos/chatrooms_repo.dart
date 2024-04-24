@@ -15,6 +15,7 @@ class ChatRoomsRepository {
       await chatRoomRef.set({
         "participants": [uid, friendUid],
         "createdAt": DateTime.now().millisecondsSinceEpoch,
+        "text": "",
       });
     }
   }
