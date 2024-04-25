@@ -35,58 +35,58 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     _authRepository = ref.read(authRepo);
   }
 
+  void _onChatTap(String chatRoomId) {
+    context
+        .pushNamed(ChatDetailScreen.routeName, params: {"chatId": chatRoomId});
+  }
+
   void _addItem() {
     context.pushNamed(UserListScreen.routeName);
   }
 
-  void _deleteItem(int index) {
-    if (_key.currentState != null) {
-      _key.currentState!.removeItem(
-        index,
-        (context, animation) => SizeTransition(
-          sizeFactor: animation,
-          child: Container(color: Colors.red.shade400, child: _makeTile(index)),
-        ),
-        duration: _duration,
-      );
-      _items.removeAt(index);
-    }
-  }
+  // void _deleteItem(int index) {
+  //   if (_key.currentState != null) {
+  //     _key.currentState!.removeItem(
+  //       index,
+  //       (context, animation) => SizeTransition(
+  //         sizeFactor: animation,
+  //         child: Container(color: Colors.red.shade400, child: _makeTile(index)),
+  //       ),
+  //       duration: _duration,
+  //     );
+  //     _items.removeAt(index);
+  //   }
+  // }
 
-//! chatroom id를 인자로 받아야 함
-  void _onChatTap(int index) {
-    context.pushNamed(ChatDetailScreen.routeName, params: {"chatId": "$index"});
-  }
-
-  Widget _makeTile(int index) {
-    return ListTile(
-      onLongPress: () => _deleteItem(index),
-      onTap: () => _onChatTap(index),
-      leading: const CircleAvatar(
-        radius: 20,
-        foregroundImage: NetworkImage(
-            "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlcnNvbnxlbnwwfDF8MHx8fDA%3D"),
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            "Message $index",
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          Text(
-            "1h",
-            style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
-          ),
-        ],
-      ),
-      subtitle: const Text(
-        "Chat messages would be here",
-        style: TextStyle(color: Colors.grey),
-      ),
-    );
-  }
+  // Widget _makeTile(int index) {
+  //   return ListTile(
+  //     onLongPress: () => _deleteItem(index),
+  //     onTap: () => _onChatTap(index),
+  //     leading: const CircleAvatar(
+  //       radius: 20,
+  //       foregroundImage: NetworkImage(
+  //           "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlcnNvbnxlbnwwfDF8MHx8fDA%3D"),
+  //     ),
+  //     title: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       crossAxisAlignment: CrossAxisAlignment.end,
+  //       children: [
+  //         Text(
+  //           "Message $index",
+  //           style: const TextStyle(fontWeight: FontWeight.w600),
+  //         ),
+  //         Text(
+  //           "1h",
+  //           style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+  //         ),
+  //       ],
+  //     ),
+  //     subtitle: const Text(
+  //       "Chat messages would be here",
+  //       style: TextStyle(color: Colors.grey),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -119,11 +119,11 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
-
+                  print(data);
                   return FutureBuilder(
                     future: ref
                         .read(chatScreenProvider.notifier)
-                        .getOtherName(currentUid),
+                        .getOtherInfo(currentUid),
                     builder: (context, asyncSnapshot) {
                       if (asyncSnapshot.connectionState ==
                           ConnectionState.waiting) {
@@ -139,9 +139,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                         ),
                         title: Text(asyncSnapshot.data ?? 'Name not fount'),
                         subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
-                        onTap: () {
-                          // 대화방을 탭했을 때 상세 화면으로 이동하도록 구현
-                        },
+                        onTap: () => _onChatTap(currentUid),
                       );
                     },
                   );

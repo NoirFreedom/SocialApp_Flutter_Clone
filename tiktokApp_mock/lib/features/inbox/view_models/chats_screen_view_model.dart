@@ -4,15 +4,15 @@ import 'package:TikTok/features/inbox/repos/chatrooms_repo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatScreenViewModel extends AsyncNotifier<String> {
-  Future<String> getOtherName(String currentUid) async {
-    //! 상태방 유저이름을 가져오기 위한 코드
+  //! 상대방의 정보를 불러와 view에서 사용 가능하도록 수정할 것
+  Future<String> getOtherInfo(String currentUid) async {
     final result = await ref.read(chatRoomsRepo).getUsersInfo();
-    final otherName = result.docs
+    print("Test: $result");
+    final otherInfo = result.docs
         .map((doc) => doc.data())
         .where((element) => element["uid"] != currentUid)
         .first["name"];
-    print('Other Name: $otherName');
-    return otherName;
+    return otherInfo;
   }
 
   @override

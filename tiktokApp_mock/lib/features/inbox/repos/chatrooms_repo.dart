@@ -26,7 +26,11 @@ class ChatRoomsRepository {
     return query.get();
   }
 
-  Future<void> loadChatroom(String chatroomId) async {}
+  Future<DocumentSnapshot<Map<String, dynamic>>> getChatroomInfo(
+      String chatroomId) async {
+    final chatRoomRef = _db.collection("chat_rooms").doc(chatroomId);
+    return chatRoomRef.get();
+  }
 
   Future<void> deleteChatroom(String chatroomId) async {}
 }
