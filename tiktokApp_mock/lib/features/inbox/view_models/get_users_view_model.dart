@@ -8,7 +8,7 @@ class GetUsersViewModel extends AsyncNotifier<List<UserProfileModel>> {
 
   @override
   FutureOr<List<UserProfileModel>> build() async {
-    _chatRoomsRepo = ref.read(chatRoomsProvider);
+    _chatRoomsRepo = ref.read(chatRoomsRepo);
     try {
       final result = await _chatRoomsRepo.getUsersInfo();
       final users = result.docs
@@ -28,7 +28,7 @@ class GetUsersViewModel extends AsyncNotifier<List<UserProfileModel>> {
 
   Future<void> createChatroom(String uid, String friendUid) async {
     ref
-        .read(chatRoomsProvider)
+        .read(chatRoomsRepo)
         .createChatroom(uid, friendUid, createChatroomId(uid, friendUid));
   }
 }

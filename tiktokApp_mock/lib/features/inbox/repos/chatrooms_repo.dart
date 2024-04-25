@@ -31,4 +31,4 @@ class ChatRoomsRepository {
   Future<void> deleteChatroom(String chatroomId) async {}
 }
 
-final chatRoomsProvider = Provider((ref) => ChatRoomsRepository());
+final chatRoomsRepo = Provider((ref) => ChatRoomsRepository());

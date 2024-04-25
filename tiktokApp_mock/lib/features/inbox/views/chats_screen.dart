@@ -1,4 +1,5 @@
 import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
+import 'package:TikTok/features/inbox/view_models/chats_screen_view_model.dart';
 import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
 import 'package:TikTok/features/inbox/views/userList_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -118,18 +119,30 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
-                  String otherUid = data['participants']
-                      .firstWhere((uid) => uid != currentUid);
-                  return ListTile(
-                    leading: const CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'https://images.unsplash.com/photo-1713948774998-c94bfccd572a?q=80&w=3386&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
-                    ),
-                    //! otherName을 표시하기위해 위 'otherUid'를 사용하여 Firestore에서 데이터를 가져와야 함(ChatScreenViewModel에서 구현)
-                    title: Text(otherName),
-                    subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
-                    onTap: () {
-                      // 대화방을 탭했을 때 상세 화면으로 이동하도록 구현
+
+                  return FutureBuilder(
+                    future: ref
+                        .read(chatScreenProvider.notifier)
+                        .getOtherName(currentUid),
+                    builder: (context, asyncSnapshot) {
+                      if (asyncSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const ListTile(
+                          leading: CircularProgressIndicator(),
+                          title: Text('Loading...'),
+                        );
+                      }
+                      return ListTile(
+                        leading: const CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              'https://images.unsplash.com/photo-1713948774998-c94bfccd572a?q=80&w=3386&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+                        ),
+                        title: Text(asyncSnapshot.data ?? 'Name not fount'),
+                        subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
+                        onTap: () {
+                          // 대화방을 탭했을 때 상세 화면으로 이동하도록 구현
+                        },
+                      );
                     },
                   );
                 }).toList(),
