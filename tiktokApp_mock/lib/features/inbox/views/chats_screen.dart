@@ -17,14 +17,15 @@ class ChatsScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatsScreenState extends ConsumerState<ChatsScreen> {
-  final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
+  // final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
 
-  final List<int> _items = [];
+  // final List<int> _items = [];
 
-  final Duration _duration = const Duration(milliseconds: 300);
+  // final Duration _duration = const Duration(milliseconds: 300);
 
   late final Stream<QuerySnapshot> _chatroomsStream;
   late final AuthenticationRepository _authRepository;
+  late final Future<Map<String, dynamic>?> otherInfoFuture;
 
   // 대화방 목록을 가져오기
   @override
@@ -33,6 +34,9 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     _chatroomsStream =
         FirebaseFirestore.instance.collection('chat_rooms').snapshots();
     _authRepository = ref.read(authRepo);
+    final currentUid = _authRepository.user!.uid;
+    otherInfoFuture =
+        ref.read(chatScreenProvider.notifier).getOtherInfo(currentUid);
   }
 
   void _onChatTap(String chatRoomId) {
@@ -90,9 +94,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUid = _authRepository.user!.uid;
-
-    print('currentUid: $currentUid');
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -119,11 +120,9 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
-                  print(data);
+                  print("data: $data");
                   return FutureBuilder(
-                    future: ref
-                        .read(chatScreenProvider.notifier)
-                        .getOtherInfo(currentUid),
+                    future: otherInfoFuture,
                     builder: (context, asyncSnapshot) {
                       if (asyncSnapshot.connectionState ==
                           ConnectionState.waiting) {
@@ -137,9 +136,11 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                           backgroundImage: NetworkImage(
                               'https://images.unsplash.com/photo-1713948774998-c94bfccd572a?q=80&w=3386&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
                         ),
-                        title: Text(asyncSnapshot.data ?? 'Name not fount'),
+                        title: Text(
+                            asyncSnapshot.data!['name'] ?? 'Name not fount'),
                         subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
-                        onTap: () => _onChatTap(currentUid),
+                        onTap: () =>
+                            _onChatTap("${document.id}_${data['uid']}"),
                       );
                     },
                   );
