@@ -50,6 +50,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.friendName);
     final isLoading = ref.watch(messagesProvider(widget.chatId)).isLoading;
     return Scaffold(
       appBar: AppBar(
