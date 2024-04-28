@@ -126,7 +126,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
-                  print("data: $data");
+                  print("data(chats screen): $data");
                   return FutureBuilder(
                     future: otherInfoFuture,
                     builder: (context, asyncSnapshot) {
