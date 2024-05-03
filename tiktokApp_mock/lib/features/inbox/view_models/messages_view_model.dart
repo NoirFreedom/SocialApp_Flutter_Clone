@@ -14,7 +14,6 @@ class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
     _messagesRepository = ref.read(messagesRepo);
   }
 
-//! chatRoomId를 받아오도록 수정
   Future<void> sendMessage(String text, String chatRoomId) async {
     final user = ref.read(authRepo).user;
     state = const AsyncLoading();
@@ -26,7 +25,7 @@ class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
           chatRoomId: chatRoomId,
           createdAt: DateTime.now().millisecondsSinceEpoch,
         );
-        _messagesRepository.sendMessage(message, "Fcinkw8THtQAQQrSnsaV");
+        _messagesRepository.sendMessage(message, chatRoomId);
       },
     );
   }
@@ -37,7 +36,6 @@ final messagesProvider =
   () => MessagesViewModel(),
 );
 
-//! chat_rooms의 id가 들어가도록 수정
 final chatProvider = StreamProvider.autoDispose
     .family<List<MessageModel>, String>((ref, chatroomId) {
   // autoDispose를 사용하여 채팅방을 나갔을 때 데이터를 삭제하도록 함

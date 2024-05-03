@@ -120,171 +120,156 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
       ),
       body: StreamBuilder(
         stream: _chatStream,
-        initialData: const Center(child: CircularProgressIndicator()),
         builder: (context, snapshot) {
-          print("snapshot.data!.docs(chats detail screen): ${snapshot.data}");
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
-            default:
-              return const Center(
-                child: Text("Load successfully"),
-              );
 
-            //! querySnapshot을 사용하여 데이터를 가져와야 함
-            // snapshot.data!.docs.map((DocumentSnapshot doc) {
-            //   Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-            //   print("data(chats detail screen) $data");
-            //   return GestureDetector(
-            //     onTap: _unfocusTextField,
-            //     child: Stack(
-            //       children: [
-            //         ref.watch(chatProvider(widget.chatId)).when(
-            //               data: (data) {
-            //                 return ListView.separated(
-            //                   itemBuilder: (context, index) {
-            //                     final message = data[index];
-            //                     final isMine = message.userId ==
-            //                         ref.watch(authRepo).user!.uid;
-            //                     if (isMine) {
-            //                       return Container(
-            //                         padding: const EdgeInsets.symmetric(
-            //                             horizontal: Sizes.size16,
-            //                             vertical: Sizes.size8),
-            //                         child: Row(
-            //                           crossAxisAlignment:
-            //                               CrossAxisAlignment.start,
-            //                           children: [
-            //                             Expanded(
-            //                               child: Column(
-            //                                 crossAxisAlignment:
-            //                                     CrossAxisAlignment.end,
-            //                                 children: [
-            //                                   Container(
-            //                                     padding: const EdgeInsets
-            //                                         .symmetric(
-            //                                         horizontal: Sizes.size8,
-            //                                         vertical: Sizes.size4),
-            //                                     decoration: BoxDecoration(
-            //                                       color: Colors.grey[300],
-            //                                       borderRadius:
-            //                                           const BorderRadius.only(
-            //                                               topLeft: Radius
-            //                                                   .circular(Sizes
-            //                                                       .size8),
-            //                                               topRight:
-            //                                                   Radius.circular(
-            //                                                       Sizes
-            //                                                           .size8),
-            //                                               bottomLeft: Radius
-            //                                                   .circular(Sizes
-            //                                                       .size8)),
-            //                                     ),
-            //                                     child: Text(
-            //                                       message.text,
-            //                                       style: TextStyle(
-            //                                           fontSize: Sizes.size16,
-            //                                           color: Colors
-            //                                               .grey.shade900),
-            //                                     ),
-            //                                   ),
-            //                                   Gaps.v4,
-            //                                   Text(
-            //                                     "12:0$index PM",
-            //                                     style: const TextStyle(
-            //                                         fontSize: Sizes.size12,
-            //                                         color: Colors.grey),
-            //                                   ),
-            //                                 ],
-            //                               ),
-            //                             ),
-            //                             Gaps.h16,
-            //                             const CircleAvatar(
-            //                               foregroundImage: NetworkImage(
-            //                                   "https://images.unsplash.com/photo-1528892952291-009c663ce843?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTZ8fHBlcnNvbnxlbnwwfHwwfHx8MA%3D%3D"),
-            //                             ),
-            //                           ],
-            //                         ),
-            //                       );
-            //                     }
-            //                     return Container(
-            //                       padding: const EdgeInsets.symmetric(
-            //                           horizontal: Sizes.size16,
-            //                           vertical: Sizes.size8),
-            //                       child: Row(
-            //                         crossAxisAlignment:
-            //                             CrossAxisAlignment.start,
-            //                         children: [
-            //                           const CircleAvatar(
-            //                             foregroundImage: NetworkImage(
-            //                                 "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlcnNvbnxlbnwwfDF8MHx8fDA%3D"),
-            //                           ),
-            //                           Gaps.h16,
-            //                           Expanded(
-            //                             child: Column(
-            //                               crossAxisAlignment:
-            //                                   CrossAxisAlignment.start,
-            //                               children: [
-            //                                 Container(
-            //                                   padding:
-            //                                       const EdgeInsets.symmetric(
-            //                                           horizontal: Sizes.size8,
-            //                                           vertical: Sizes.size4),
-            //                                   decoration: BoxDecoration(
-            //                                     color: Colors.grey[300],
-            //                                     borderRadius:
-            //                                         const BorderRadius.only(
-            //                                             topLeft:
-            //                                                 Radius.circular(
-            //                                                     Sizes.size8),
-            //                                             topRight:
-            //                                                 Radius.circular(
-            //                                                     Sizes.size8),
-            //                                             bottomRight:
-            //                                                 Radius.circular(
-            //                                                     Sizes.size8)),
-            //                                   ),
-            //                                   child: Text(
-            //                                     message.text,
-            //                                     style: TextStyle(
-            //                                         fontSize: Sizes.size16,
-            //                                         color:
-            //                                             Colors.grey.shade900),
-            //                                   ),
-            //                                 ),
-            //                                 Gaps.v4,
-            //                                 Text(
-            //                                   "12:0$index PM",
-            //                                   style: const TextStyle(
-            //                                       fontSize: Sizes.size12,
-            //                                       color: Colors.grey),
-            //                                 ),
-            //                               ],
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //                     );
-            //                   },
-            //                   separatorBuilder: (context, index) => Gaps.h10,
-            //                   itemCount: data.length,
-            //                 );
-            //               },
-            //               error: (error, stackTrace) => Center(
-            //                 child: Text(error.toString()),
-            //               ),
-            //               loading: () => const Center(
-            //                 child: CircularProgressIndicator(),
-            //               ),
-            //             ),
-            //       ],
-            //     ),
-            //   );
-            // });
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
+
+          // Ensure that snapshot.data is not null and is of type QuerySnapshot
+          final querySnapshot = snapshot.data;
+          if (querySnapshot == null) {
+            return const Center(child: Text("No data found"));
+          }
+
+          final docs = querySnapshot.docs;
+          print("docs: $docs");
+          return GestureDetector(
+            onTap: _unfocusTextField,
+            child: Stack(
+              children: [
+                ref.watch(chatProvider(widget.chatId)).when(
+                      data: (data) {
+                        return ListView.separated(
+                          itemBuilder: (context, index) {
+                            final message = data[index];
+                            final isMine =
+                                message.userId == ref.watch(authRepo).user!.uid;
+                            if (isMine) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Sizes.size16,
+                                    vertical: Sizes.size8),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: Sizes.size8,
+                                                vertical: Sizes.size4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[300],
+                                              borderRadius: const BorderRadius
+                                                  .only(
+                                                  topLeft: Radius.circular(
+                                                      Sizes.size8),
+                                                  topRight: Radius.circular(
+                                                      Sizes.size8),
+                                                  bottomLeft: Radius.circular(
+                                                      Sizes.size8)),
+                                            ),
+                                            child: Text(
+                                              message.text,
+                                              style: TextStyle(
+                                                  fontSize: Sizes.size16,
+                                                  color: Colors.grey.shade900),
+                                            ),
+                                          ),
+                                          Gaps.v4,
+                                          Text(
+                                            "12:0$index PM",
+                                            style: const TextStyle(
+                                                fontSize: Sizes.size12,
+                                                color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Gaps.h16,
+                                    const CircleAvatar(
+                                      foregroundImage: NetworkImage(
+                                          "https://images.unsplash.com/photo-1528892952291-009c663ce843?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTZ8fHBlcnNvbnxlbnwwfHwwfHx8MA%3D%3D"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Sizes.size16,
+                                  vertical: Sizes.size8),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const CircleAvatar(
+                                    foregroundImage: NetworkImage(
+                                        "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlcnNvbnxlbnwwfDF8MHx8fDA%3D"),
+                                  ),
+                                  Gaps.h16,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: Sizes.size8,
+                                              vertical: Sizes.size4),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[300],
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                    topLeft: Radius.circular(
+                                                        Sizes.size8),
+                                                    topRight: Radius.circular(
+                                                        Sizes.size8),
+                                                    bottomRight:
+                                                        Radius.circular(
+                                                            Sizes.size8)),
+                                          ),
+                                          child: Text(
+                                            message.text,
+                                            style: TextStyle(
+                                                fontSize: Sizes.size16,
+                                                color: Colors.grey.shade900),
+                                          ),
+                                        ),
+                                        Gaps.v4,
+                                        Text(
+                                          "12:0$index PM",
+                                          style: const TextStyle(
+                                              fontSize: Sizes.size12,
+                                              color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) => Gaps.h10,
+                          itemCount: data.length,
+                        );
+                      },
+                      error: (error, stackTrace) => Center(
+                        child: Text(error.toString()),
+                      ),
+                      loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+              ],
+            ),
+          );
         },
       ),
       bottomNavigationBar: BottomAppBar(
