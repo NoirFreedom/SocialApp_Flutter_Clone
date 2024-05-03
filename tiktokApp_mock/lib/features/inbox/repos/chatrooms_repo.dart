@@ -15,7 +15,14 @@ class ChatRoomsRepository {
       await chatRoomRef.set({
         "participants": [uid, friendUid],
         "createdAt": DateTime.now().millisecondsSinceEpoch,
-        "text": "",
+      });
+
+      // 'texts' 서브 컬렉션 생성 및 초기화
+      CollectionReference textsRef = chatRoomRef.collection("texts");
+      await textsRef.add({
+        "text": "Welcome to the chat room!",
+        "userId": uid,
+        "createdAt": DateTime.now().millisecondsSinceEpoch,
       });
     }
   }

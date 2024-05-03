@@ -126,7 +126,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
-                  print("data(chats screen): $data");
                   return FutureBuilder(
                     future: otherInfoFuture,
                     builder: (context, asyncSnapshot) {
@@ -145,8 +144,8 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                         title: Text(
                             asyncSnapshot.data!['name'] ?? 'Name not fount'),
                         subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
-                        onTap: () => _onChatTap("${document.id}_${data['uid']}",
-                            asyncSnapshot.data!['name']),
+                        onTap: () => _onChatTap(
+                            "${document.id}}", asyncSnapshot.data!['name']),
                       );
                     },
                   );
