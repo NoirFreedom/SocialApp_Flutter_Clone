@@ -45,6 +45,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     }, queryParams: {
       "friendName": friendName, // 쿼리 파라미터로 이름을 전달합니다.
     });
+    print("chatRoomId on chatScreen: $chatRoomId");
   }
 
   void _addItem() {

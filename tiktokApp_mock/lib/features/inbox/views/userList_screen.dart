@@ -20,9 +20,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => ChatDetailScreen(
-                  chatId: uid,
+                  chatId: "${friendUid}_$uid",
                   friendName: friendName,
                 )));
+    print("created chatroom on UserListScreen: ${friendUid}_$uid");
   }
 
   @override

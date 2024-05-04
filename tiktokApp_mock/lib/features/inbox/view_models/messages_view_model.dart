@@ -28,6 +28,7 @@ class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
         _messagesRepository.sendMessage(message, chatRoomId);
       },
     );
+    print("chatRoomId on messages_view_model: $chatRoomId");
   }
 }
 

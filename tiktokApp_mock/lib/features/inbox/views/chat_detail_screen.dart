@@ -58,6 +58,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         .read(messagesProvider(widget.chatId).notifier)
         .sendMessage(text, widget.chatId);
     _textEditingController.clear();
+    print("chatRoomId on chat_detail_screen: ${widget.chatId}");
   }
 
   @override
