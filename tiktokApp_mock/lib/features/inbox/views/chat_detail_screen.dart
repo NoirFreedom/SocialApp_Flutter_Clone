@@ -49,7 +49,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     _focusNode.unfocus();
   }
 
-//! ChatScreen에서 chatRoomId를 받아야 함(chatroomId를 제외하고 firebase에 정상적으로 등록됨)
   void _onSendPressed() {
     final text = _textEditingController.text;
     if (text.isEmpty) {
@@ -59,7 +58,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         .read(messagesProvider(widget.chatId).notifier)
         .sendMessage(text, widget.chatId);
     _textEditingController.clear();
-    print("chatId: ${widget.chatId}");
   }
 
   @override
@@ -136,8 +134,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
             return const Center(child: Text("No data found"));
           }
 
-          final docs = querySnapshot.docs;
-          print("docs: $docs");
           return GestureDetector(
             onTap: _unfocusTextField,
             child: Stack(

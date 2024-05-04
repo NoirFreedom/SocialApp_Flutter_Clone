@@ -9,6 +9,7 @@ class ChatRoomsRepository {
       String uid, String friendUid, String chatRoomId) async {
     DocumentReference chatRoomRef =
         _db.collection("chat_rooms").doc(chatRoomId);
+    print("chatRoomRef: $chatRoomRef");
 
     final chatRoomSnapshot = await chatRoomRef.get();
     if (!chatRoomSnapshot.exists) {
@@ -16,11 +17,11 @@ class ChatRoomsRepository {
         "participants": [uid, friendUid],
         "createdAt": DateTime.now().millisecondsSinceEpoch,
       });
-
+      //! 여기까지 작업완료
       // 'texts' 서브 컬렉션 생성 및 초기화
       CollectionReference textsRef = chatRoomRef.collection("texts");
       await textsRef.add({
-        "text": "Welcome to the chat room!",
+        "text": "Chat room created",
         "userId": uid,
         "createdAt": DateTime.now().millisecondsSinceEpoch,
       });

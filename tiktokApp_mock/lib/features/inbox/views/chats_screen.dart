@@ -39,10 +39,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         ref.read(chatScreenProvider.notifier).getOtherInfo(currentUid);
   }
 
-  void _onChatTap(
-    String chatRoomId,
-    String friendName,
-  ) {
+  void _onChatTap(String chatRoomId, String friendName) {
     context.pushNamed(ChatDetailScreen.routeName, params: {
       "chatId": chatRoomId,
     }, queryParams: {
@@ -145,7 +142,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                             asyncSnapshot.data!['name'] ?? 'Name not fount'),
                         subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
                         onTap: () => _onChatTap(
-                            "${document.id}}", asyncSnapshot.data!['name']),
+                            document.id, asyncSnapshot.data!['name']),
                       );
                     },
                   );
