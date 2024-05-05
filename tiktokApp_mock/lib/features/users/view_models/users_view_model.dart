@@ -59,7 +59,7 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     await _userRepository.updateUser(state.value!.uid, {"hasAvatar": true});
   }
 
-  Future<void> getUserAvatar(String uid) {
+  Future<String> getUserAvatar(String uid) {
     return _userRepository.getUserAvatar(uid);
   }
 
