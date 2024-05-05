@@ -2,6 +2,7 @@ import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
 import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
 import 'package:TikTok/features/inbox/view_models/messages_view_model.dart';
+import 'package:TikTok/features/users/view_models/users_view_model.dart';
 import 'package:TikTok/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,33 +65,48 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(messagesProvider(widget.chatId)).isLoading;
+    final String friendUid = widget.chatId.split("_").first;
+
     return Scaffold(
       appBar: AppBar(
         title: ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: Stack(
-            children: [
-              const CircleAvatar(
-                foregroundImage: NetworkImage(
-                    "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlcnNvbnxlbnwwfDF8MHx8fDA%3D"),
-              ),
-              Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    height: Sizes.size10,
-                    width: Sizes.size10,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                          color: isDarkMode(context)
-                              ? Colors.grey.shade900
-                              : Colors.white,
-                          width: 1.5),
+          leading: FutureBuilder(
+            future: ref.read(usersProvider.notifier).getUserAvatar(friendUid),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                return Stack(
+                  children: [
+                    CircleAvatar(
+                      foregroundImage: NetworkImage(snapshot.data as String),
                     ),
-                  )),
-            ],
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        height: Sizes.size10,
+                        width: Sizes.size10,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: isDarkMode(context)
+                                  ? Colors.grey.shade900
+                                  : Colors.white,
+                              width: 1.5),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              } else if (snapshot.hasError) {
+                return const CircleAvatar(
+                    child: Icon(Icons.error_outline)); // 에러가 발생했을 경우
+              }
+              return const CircleAvatar(
+                  child: CircularProgressIndicator()); // 로딩 중
+            },
           ),
           title: Text(
             widget.friendName,
@@ -192,6 +208,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                       ),
                                     ),
                                     Gaps.h16,
+                                    //! 이미지 불러오기
                                     const CircleAvatar(
                                       foregroundImage: NetworkImage(
                                           "https://images.unsplash.com/photo-1528892952291-009c663ce843?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTZ8fHBlcnNvbnxlbnwwfHwwfHx8MA%3D%3D"),

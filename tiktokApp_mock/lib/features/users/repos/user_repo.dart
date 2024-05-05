@@ -26,6 +26,17 @@ class UserRepository {
   Future<void> updateUser(String uid, Map<String, dynamic> data) async {
     await _db.collection("users").doc(uid).update(data);
   }
+
+  Future<String> getUserAvatar(String uid) async {
+    final fileRef = _storage.ref().child("avatars/$uid.jpg");
+    try {
+      final downloadUrl = await fileRef.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print("Failed to get avatar: $e");
+      return "";
+    }
+  }
 }
 
 final userRepo = Provider((ref) => UserRepository());

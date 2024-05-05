@@ -36,7 +36,7 @@ final messagesProvider =
     AsyncNotifierProvider.family<MessagesViewModel, void, String>(
   () => MessagesViewModel(),
 );
-
+// 챗팅방에 있는 메시지들을 가져오는 Provider
 final chatProvider = StreamProvider.autoDispose
     .family<List<MessageModel>, String>((ref, chatroomId) {
   // autoDispose를 사용하여 채팅방을 나갔을 때 데이터를 삭제하도록 함
