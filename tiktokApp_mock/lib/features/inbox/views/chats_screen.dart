@@ -88,8 +88,8 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                       }
                       return ListTile(
                         leading: FutureBuilder(
-                            future: userProfile
-                                .getUserAvatar(asyncSnapshot.data!['uid']),
+                            future: userProfile.getUserAvatar(
+                                "${asyncSnapshot.data!['uid']}.jpg"),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {

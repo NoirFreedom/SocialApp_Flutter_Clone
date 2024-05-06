@@ -28,7 +28,7 @@ class UserRepository {
   }
 
   Future<String> getUserAvatar(String uid) async {
-    final fileRef = _storage.ref().child("avatars/$uid.jpg");
+    final fileRef = _storage.ref().child("avatars/$uid");
     try {
       final downloadUrl = await fileRef.getDownloadURL();
       return downloadUrl;

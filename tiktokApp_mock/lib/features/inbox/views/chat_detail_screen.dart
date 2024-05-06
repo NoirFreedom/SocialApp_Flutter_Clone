@@ -66,13 +66,17 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(messagesProvider(widget.chatId)).isLoading;
     final String friendUid = widget.chatId.split("_").first;
+    final uid = ref.watch(authRepo).user!.uid;
+    print(uid);
 
     return Scaffold(
       appBar: AppBar(
         title: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: FutureBuilder(
-            future: ref.read(usersProvider.notifier).getUserAvatar(friendUid),
+            future: ref
+                .read(usersProvider.notifier)
+                .getUserAvatar("$friendUid.jpg"),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
@@ -140,17 +144,14 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           // Ensure that snapshot.data is not null and is of type QuerySnapshot
           final querySnapshot = snapshot.data;
           if (querySnapshot == null) {
             return const Center(child: Text("No data found"));
           }
-
           return GestureDetector(
             onTap: _unfocusTextField,
             child: Stack(
@@ -208,15 +209,33 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                       ),
                                     ),
                                     Gaps.h16,
-                                    //! 이미지 불러오기
-                                    const CircleAvatar(
-                                      foregroundImage: NetworkImage(
-                                          "https://images.unsplash.com/photo-1528892952291-009c663ce843?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTZ8fHBlcnNvbnxlbnwwfHwwfHx8MA%3D%3D"),
+                                    // 내가 보낸 메시지
+                                    FutureBuilder(
+                                      future: ref
+                                          .read(usersProvider.notifier)
+                                          .getUserAvatar(uid),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                                ConnectionState.done &&
+                                            snapshot.hasData) {
+                                          return CircleAvatar(
+                                            foregroundImage: NetworkImage(
+                                                snapshot.data as String),
+                                          );
+                                        } else if (snapshot.hasError) {
+                                          return const CircleAvatar(
+                                              child: Icon(Icons
+                                                  .error_outline)); // 에러가 발생했을 경우
+                                        }
+                                        return const CircleAvatar(
+                                            child: CircularProgressIndicator());
+                                      },
                                     ),
                                   ],
                                 ),
                               );
                             }
+                            // 상대방이 보낸 메시지
                             return Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: Sizes.size16,
@@ -224,9 +243,26 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const CircleAvatar(
-                                    foregroundImage: NetworkImage(
-                                        "https://images.unsplash.com/photo-1542206395-9feb3edaa68d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlcnNvbnxlbnwwfDF8MHx8fDA%3D"),
+                                  FutureBuilder(
+                                    future: ref
+                                        .read(usersProvider.notifier)
+                                        .getUserAvatar("$friendUid.jpg"),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                              ConnectionState.done &&
+                                          snapshot.hasData) {
+                                        return CircleAvatar(
+                                          foregroundImage: NetworkImage(
+                                              snapshot.data as String),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return const CircleAvatar(
+                                            child: Icon(Icons
+                                                .error_outline)); // 에러가 발생했을 경우
+                                      }
+                                      return const CircleAvatar(
+                                          child: CircularProgressIndicator());
+                                    },
                                   ),
                                   Gaps.h16,
                                   Expanded(
