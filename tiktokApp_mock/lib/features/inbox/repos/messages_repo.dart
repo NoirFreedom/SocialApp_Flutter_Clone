@@ -11,6 +11,20 @@ class MessagesRepository {
           message.toJson(),
         );
   }
+
+  // 메세지 삭제 기능
+  Future<void> deleteMessage(int createdAt, String chatRoomId) async {
+    QuerySnapshot querySnapshot = await _db
+        .collection("chat_rooms")
+        .doc(chatRoomId)
+        .collection("texts")
+        .where("createdAt", isEqualTo: createdAt)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      await querySnapshot.docs.first.reference.delete();
+    }
+  }
 }
 
 final messagesRepo = Provider((ref) => MessagesRepository());

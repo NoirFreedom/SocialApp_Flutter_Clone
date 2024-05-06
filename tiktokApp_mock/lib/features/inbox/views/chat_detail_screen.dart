@@ -62,6 +62,36 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     print("chatRoomId on chat_detail_screen: ${widget.chatId}");
   }
 
+  void _deleteMessagePrompt(int createdAt, String chatRoomId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Message'),
+          content: const Text('Are you sure you want to delete this message?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // 대화상자 닫기
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // 대화상자 닫기
+                // 메시지 삭제 로직 호출
+                await ref
+                    .read(messagesProvider(widget.chatId).notifier)
+                    .deleteMessage(createdAt, chatRoomId);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(messagesProvider(widget.chatId)).isLoading;
@@ -161,77 +191,92 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                         return ListView.separated(
                           itemBuilder: (context, index) {
                             final message = data[index];
+
                             final isMine =
                                 message.userId == ref.watch(authRepo).user!.uid;
                             if (isMine) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: Sizes.size16,
-                                    vertical: Sizes.size8),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: Sizes.size8,
-                                                vertical: Sizes.size4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[300],
-                                              borderRadius: const BorderRadius
-                                                  .only(
-                                                  topLeft: Radius.circular(
-                                                      Sizes.size8),
-                                                  topRight: Radius.circular(
-                                                      Sizes.size8),
-                                                  bottomLeft: Radius.circular(
-                                                      Sizes.size8)),
+                              return GestureDetector(
+                                onLongPress: () {
+                                  print("message: ${message.createdAt}");
+                                  _deleteMessagePrompt(
+                                      message.createdAt, widget.chatId);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: Sizes.size16,
+                                      vertical: Sizes.size8),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: Sizes.size8,
+                                                      vertical: Sizes.size4),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[300],
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(
+                                                                Sizes.size8),
+                                                        topRight:
+                                                            Radius.circular(
+                                                                Sizes.size8),
+                                                        bottomLeft:
+                                                            Radius.circular(
+                                                                Sizes.size8)),
+                                              ),
+                                              child: Text(
+                                                message.text,
+                                                style: TextStyle(
+                                                    fontSize: Sizes.size16,
+                                                    color:
+                                                        Colors.grey.shade900),
+                                              ),
                                             ),
-                                            child: Text(
-                                              message.text,
-                                              style: TextStyle(
-                                                  fontSize: Sizes.size16,
-                                                  color: Colors.grey.shade900),
+                                            Gaps.v4,
+                                            Text(
+                                              "12:0$index PM",
+                                              style: const TextStyle(
+                                                  fontSize: Sizes.size12,
+                                                  color: Colors.grey),
                                             ),
-                                          ),
-                                          Gaps.v4,
-                                          Text(
-                                            "12:0$index PM",
-                                            style: const TextStyle(
-                                                fontSize: Sizes.size12,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Gaps.h16,
-                                    // 내가 보낸 메시지
-                                    FutureBuilder(
-                                      future: ref
-                                          .read(usersProvider.notifier)
-                                          .getUserAvatar(uid),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState ==
-                                                ConnectionState.done &&
-                                            snapshot.hasData) {
-                                          return CircleAvatar(
-                                            foregroundImage: NetworkImage(
-                                                snapshot.data as String),
-                                          );
-                                        } else if (snapshot.hasError) {
+                                      Gaps.h16,
+                                      // 내가 보낸 메시지
+                                      FutureBuilder(
+                                        future: ref
+                                            .read(usersProvider.notifier)
+                                            .getUserAvatar(uid),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                                  ConnectionState.done &&
+                                              snapshot.hasData) {
+                                            return CircleAvatar(
+                                              foregroundImage: NetworkImage(
+                                                  snapshot.data as String),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return const CircleAvatar(
+                                                child: Icon(Icons
+                                                    .error_outline)); // 에러가 발생했을 경우
+                                          }
                                           return const CircleAvatar(
-                                              child: Icon(Icons
-                                                  .error_outline)); // 에러가 발생했을 경우
-                                        }
-                                        return const CircleAvatar(
-                                            child: CircularProgressIndicator());
-                                      },
-                                    ),
-                                  ],
+                                              child:
+                                                  CircularProgressIndicator());
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             }

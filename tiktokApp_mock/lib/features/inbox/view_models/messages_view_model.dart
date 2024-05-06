@@ -30,6 +30,11 @@ class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
     );
     print("chatRoomId on messages_view_model: $chatRoomId");
   }
+
+  // 메지지 삭제
+  Future<void> deleteMessage(int createdAt, String chatRoomId) async {
+    _messagesRepository.deleteMessage(createdAt, chatRoomId);
+  }
 }
 
 final messagesProvider =
