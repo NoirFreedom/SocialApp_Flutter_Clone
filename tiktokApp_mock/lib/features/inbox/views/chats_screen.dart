@@ -29,9 +29,10 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     _chatroomsStream =
         FirebaseFirestore.instance.collection('chat_rooms').snapshots();
     _authRepository = ref.read(authRepo);
-    final currentUid = _authRepository.user!.uid;
-    otherInfoFuture =
-        ref.read(chatScreenProvider.notifier).getOtherInfo(currentUid);
+    // otherInfoFuture =
+    //     ref.read(chatScreenProvider.notifier).getOtherInfo(currentUid);
+    // print("currentUid: $currentUid");
+    // print("_authRepository: ${_authRepository.user!.uid}");
   }
 
   void _onChatTap(String chatRoomId, String friendName) {
@@ -50,6 +51,10 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   @override
   Widget build(BuildContext context) {
     final userProfile = ref.read(usersProvider.notifier);
+    final currentUid = _authRepository.user!.uid;
+
+    final chatroomFuture =
+        ref.read(chatScreenProvider.notifier).getChatroomInfo(currentUid);
 
     return Scaffold(
       appBar: AppBar(
@@ -77,8 +82,10 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
                   return FutureBuilder(
-                    future: otherInfoFuture,
+                    //! 채팅방에 있는 상대방의 정보를 가져오기(otherInfoFuture을 사용해야 하는가?)
+                    future: chatroomFuture,
                     builder: (context, asyncSnapshot) {
+                      print("data: $data");
                       if (asyncSnapshot.connectionState ==
                           ConnectionState.waiting) {
                         return const ListTile(
@@ -88,14 +95,16 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                       }
                       return ListTile(
                         leading: FutureBuilder(
-                            future: userProfile.getUserAvatar(
-                                "${asyncSnapshot.data!['uid']}.jpg"),
+                            future: userProfile
+                                .getUserAvatar("${asyncSnapshot.data!['uid']}"),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const CircularProgressIndicator();
                               }
                               if (snapshot.hasData) {
+                                print(
+                                    "asyncSnapshot.data!['uid']: ${asyncSnapshot.data!['uid']}");
                                 return CircleAvatar(
                                   backgroundImage:
                                       NetworkImage(snapshot.data.toString()),
@@ -107,7 +116,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                               return const Icon(Icons.account_circle);
                             }),
                         title: Text(
-                            asyncSnapshot.data!['name'] ?? 'Name not fount'),
+                            asyncSnapshot.data!['name'] ?? 'Name not found'),
                         subtitle: Text(data['lastMessage'] ?? '마지막 메시지 없음'),
                         onTap: () => _onChatTap(
                             document.id, asyncSnapshot.data!['name']),

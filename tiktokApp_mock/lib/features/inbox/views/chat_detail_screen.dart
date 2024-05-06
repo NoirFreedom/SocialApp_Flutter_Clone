@@ -104,9 +104,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         title: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: FutureBuilder(
-            future: ref
-                .read(usersProvider.notifier)
-                .getUserAvatar("$friendUid.jpg"),
+            future: ref.read(usersProvider.notifier).getUserAvatar(friendUid),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
@@ -291,7 +289,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                   FutureBuilder(
                                     future: ref
                                         .read(usersProvider.notifier)
-                                        .getUserAvatar("$friendUid.jpg"),
+                                        .getUserAvatar(friendUid),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                               ConnectionState.done &&
