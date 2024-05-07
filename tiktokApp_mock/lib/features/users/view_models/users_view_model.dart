@@ -63,6 +63,10 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     return _userRepository.getUserAvatar(uid);
   }
 
+  Future<Map<String, dynamic>?> getUserInfo(String uid) async {
+    return _userRepository.findProfile(uid);
+  }
+
   Future<void> onUsernameUpdate(String username) async {
     if (state.value == null) return;
     state = AsyncValue.data(state.value!.copyWith(name: username));

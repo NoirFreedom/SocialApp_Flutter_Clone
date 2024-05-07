@@ -1,5 +1,4 @@
 import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
-import 'package:TikTok/features/inbox/view_models/chats_screen_view_model.dart';
 import 'package:TikTok/features/inbox/views/chat_detail_screen.dart';
 import 'package:TikTok/features/inbox/views/userList_screen.dart';
 import 'package:TikTok/features/users/view_models/users_view_model.dart';
@@ -29,10 +28,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     _chatroomsStream =
         FirebaseFirestore.instance.collection('chat_rooms').snapshots();
     _authRepository = ref.read(authRepo);
-    // otherInfoFuture =
-    //     ref.read(chatScreenProvider.notifier).getOtherInfo(currentUid);
-    // print("currentUid: $currentUid");
-    // print("_authRepository: ${_authRepository.user!.uid}");
   }
 
   void _onChatTap(String chatRoomId, String friendName) {
@@ -53,8 +48,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     final userProfile = ref.read(usersProvider.notifier);
     final currentUid = _authRepository.user!.uid;
 
-    final chatroomFuture =
-        ref.read(chatScreenProvider.notifier).getChatroomInfo(currentUid);
+    final getUserInfo = ref.read(usersProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -81,9 +75,14 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
+                  List<String> participants =
+                      List<String>.from(data['participants']);
+                  String otherUid =
+                      participants.firstWhere((id) => id != currentUid);
+                  print("otherUid: $otherUid");
+
                   return FutureBuilder(
-                    //! 채팅방에 있는 상대방의 정보를 가져오기(otherInfoFuture을 사용해야 하는가?)
-                    future: chatroomFuture,
+                    future: getUserInfo.getUserInfo(otherUid),
                     builder: (context, asyncSnapshot) {
                       print("data: $data");
                       if (asyncSnapshot.connectionState ==
@@ -95,16 +94,14 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                       }
                       return ListTile(
                         leading: FutureBuilder(
-                            future: userProfile
-                                .getUserAvatar("${asyncSnapshot.data!['uid']}"),
+                            future: userProfile.getUserAvatar(otherUid),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const CircularProgressIndicator();
                               }
                               if (snapshot.hasData) {
-                                print(
-                                    "asyncSnapshot.data!['uid']: ${asyncSnapshot.data!['uid']}");
+                                print("otherUid: $otherUid");
                                 return CircleAvatar(
                                   backgroundImage:
                                       NetworkImage(snapshot.data.toString()),
