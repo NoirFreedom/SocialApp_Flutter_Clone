@@ -109,8 +109,8 @@ TikTok을 벤치마킹하며, 그 플랫폼의 핵심 기능들을 재현하며 
 ## Chat Screen
 
 <p float="left">
-  <img src="tiktokApp_mock/assets/images/chat_screen.png" alt="" width="230">
-  <img src="tiktokApp_mock/assets/images/chat_detail_screen.png" alt="" width="230">
+  <img src="tiktokApp_mock/assets/images/chat_screen.png" alt="" width="700">
+  <img src="tiktokApp_mock/assets/images/chat_detail_screen.png" alt="" width="700">
 </p>
 
 *Firebase로 주요 채팅 기능을 구현하고 통합했으며, 주요 기능에는 사용자 이미지, 이름, 최근 대화 내용 불러오기, 실시간 채팅 등이 포함됩니다. 위 스크린샷은 Android Studio에서 실행한 Android 에뮬레이터와 Visual Studio Code에서 실행한 iOS 시뮬레이터를 보여주며, 플랫폼 간의 상호 운용성을 확인 할 수 있습니다.*
