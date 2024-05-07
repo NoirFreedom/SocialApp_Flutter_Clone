@@ -36,7 +36,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     }, queryParams: {
       "friendName": friendName, // 쿼리 파라미터로 이름을 전달합니다.
     });
-    print("chatRoomId on chatScreen: $chatRoomId");
   }
 
   void _addItem() {
@@ -79,12 +78,10 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                       List<String>.from(data['participants']);
                   String otherUid =
                       participants.firstWhere((id) => id != currentUid);
-                  print("otherUid: $otherUid");
 
                   return FutureBuilder(
                     future: getUserInfo.getUserInfo(otherUid),
                     builder: (context, asyncSnapshot) {
-                      print("data: $data");
                       if (asyncSnapshot.connectionState ==
                           ConnectionState.waiting) {
                         return const ListTile(
@@ -101,7 +98,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                                 return const CircularProgressIndicator();
                               }
                               if (snapshot.hasData) {
-                                print("otherUid: $otherUid");
                                 return CircleAvatar(
                                   backgroundImage:
                                       NetworkImage(snapshot.data.toString()),

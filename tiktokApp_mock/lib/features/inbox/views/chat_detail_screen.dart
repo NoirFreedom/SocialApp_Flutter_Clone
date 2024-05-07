@@ -1,6 +1,7 @@
 import 'package:TikTok/constants/gaps.dart';
 import 'package:TikTok/constants/sizes.dart';
 import 'package:TikTok/features/authentication/repos/authentication_repo.dart';
+import 'package:TikTok/features/inbox/repos/chatrooms_repo.dart';
 import 'package:TikTok/features/inbox/view_models/messages_view_model.dart';
 import 'package:TikTok/features/users/view_models/users_view_model.dart';
 import 'package:TikTok/utils.dart';
@@ -30,12 +31,16 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _textEditingController = TextEditingController();
   late final Stream<QuerySnapshot> _chatStream;
+  late final ChatRoomsRepository chatRoomsRepo;
+  late final Future<String> otherUidFuture;
 
   @override
   void initState() {
     super.initState();
     _chatStream =
         FirebaseFirestore.instance.collection('chat_rooms').snapshots();
+    chatRoomsRepo = ref.read(chatRoomsRepoProvider);
+    otherUidFuture = loadOtherUid();
   }
 
   @override
@@ -92,52 +97,81 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     );
   }
 
+  Future<String> loadOtherUid() async {
+    final docSnapshot = await chatRoomsRepo.getParticipantUid(widget.chatId);
+    final data = docSnapshot.data();
+    if (data != null) {
+      List<dynamic> participants = data['participants'];
+      String otherUid =
+          participants.firstWhere((uid) => uid != ref.read(authRepo).user!.uid);
+      return otherUid;
+    }
+    throw Exception("No other participant found");
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(messagesProvider(widget.chatId)).isLoading;
-    final String friendUid = widget.chatId.split("_").first;
+
     final uid = ref.watch(authRepo).user!.uid;
-    print(uid);
 
     return Scaffold(
       appBar: AppBar(
         title: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: FutureBuilder(
-            future: ref.read(usersProvider.notifier).getUserAvatar(friendUid),
+            future: otherUidFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
-                return Stack(
-                  children: [
-                    CircleAvatar(
-                      foregroundImage: NetworkImage(snapshot.data as String),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        height: Sizes.size10,
-                        width: Sizes.size10,
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: isDarkMode(context)
-                                  ? Colors.grey.shade900
-                                  : Colors.white,
-                              width: 1.5),
-                        ),
-                      ),
-                    ),
-                  ],
+                final otherUid = snapshot.data!;
+                print("otherUid: $otherUid");
+                print("uid: $uid");
+
+                return FutureBuilder(
+                  future:
+                      ref.read(usersProvider.notifier).getUserAvatar(otherUid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
+                      return Stack(
+                        children: [
+                          CircleAvatar(
+                            foregroundImage:
+                                NetworkImage(snapshot.data as String),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              height: Sizes.size10,
+                              width: Sizes.size10,
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: isDarkMode(context)
+                                        ? Colors.grey.shade900
+                                        : Colors.white,
+                                    width: 1.5),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      return const CircleAvatar(
+                          child: Icon(Icons.error_outline)); // 에러가 발생했을 경우
+                    }
+                    return const CircleAvatar(
+                        child: CircularProgressIndicator()); // 로딩 중
+                  },
                 );
               } else if (snapshot.hasError) {
-                return const CircleAvatar(
-                    child: Icon(Icons.error_outline)); // 에러가 발생했을 경우
+                return const CircleAvatar(child: Icon(Icons.error));
+              } else {
+                return const CircleAvatar(child: CircularProgressIndicator());
               }
-              return const CircleAvatar(
-                  child: CircularProgressIndicator()); // 로딩 중
             },
           ),
           title: Text(
@@ -178,6 +212,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
           // Ensure that snapshot.data is not null and is of type QuerySnapshot
           final querySnapshot = snapshot.data;
           if (querySnapshot == null) {
+            print("querySnapshot: $querySnapshot");
             return const Center(child: Text("No data found"));
           }
           return GestureDetector(
@@ -259,6 +294,8 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                           if (snapshot.connectionState ==
                                                   ConnectionState.done &&
                                               snapshot.hasData) {
+                                            print(
+                                                "snapshot.data: ${snapshot.data}");
                                             return CircleAvatar(
                                               foregroundImage: NetworkImage(
                                                   snapshot.data as String),
@@ -287,26 +324,46 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   FutureBuilder(
-                                    future: ref
-                                        .read(usersProvider.notifier)
-                                        .getUserAvatar(friendUid),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                              ConnectionState.done &&
-                                          snapshot.hasData) {
-                                        return CircleAvatar(
-                                          foregroundImage: NetworkImage(
-                                              snapshot.data as String),
-                                        );
-                                      } else if (snapshot.hasError) {
-                                        return const CircleAvatar(
-                                            child: Icon(Icons
-                                                .error_outline)); // 에러가 발생했을 경우
-                                      }
-                                      return const CircleAvatar(
-                                          child: CircularProgressIndicator());
-                                    },
-                                  ),
+                                      future: otherUidFuture,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                                ConnectionState.done &&
+                                            snapshot.hasData) {
+                                          final otherUid = snapshot.data!;
+                                          return FutureBuilder(
+                                            //! friendUid를 가져오는 로직을 바꿔야 할 수도?
+                                            future: ref
+                                                .read(usersProvider.notifier)
+                                                .getUserAvatar(otherUid),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                      ConnectionState.done &&
+                                                  snapshot.hasData) {
+                                                print(
+                                                    "snapshot.data: ${snapshot.data}");
+                                                return CircleAvatar(
+                                                  foregroundImage: NetworkImage(
+                                                      snapshot.data as String),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return const CircleAvatar(
+                                                    child: Icon(Icons
+                                                        .error_outline)); // 에러가 발생했을 경우
+                                              }
+                                              return const CircleAvatar(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            },
+                                          );
+                                        } else if (snapshot.hasError) {
+                                          return const CircleAvatar(
+                                              child: Icon(Icons.error));
+                                        } else {
+                                          return const CircleAvatar(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        }
+                                      }),
                                   Gaps.h16,
                                   Expanded(
                                     child: Column(

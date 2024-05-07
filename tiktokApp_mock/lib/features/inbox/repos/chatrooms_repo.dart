@@ -29,12 +29,12 @@ class ChatRoomsRepository {
   }
 
   // '+' 버튼을 눌렀을 때 친구 목록을 불러오는 코드
-  Future<QuerySnapshot<Map<String, dynamic>>> getUsersInfo() async {
+  Future<QuerySnapshot<Map<String, dynamic>>> participantsInfo() async {
     final query = _db.collection("users");
     return query.get();
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getChatroomInfo(
+  Future<DocumentSnapshot<Map<String, dynamic>>> getParticipantUid(
       String chatroomId) async {
     final chatRoomRef = _db.collection("chat_rooms").doc(chatroomId);
     return chatRoomRef.get();
@@ -43,4 +43,4 @@ class ChatRoomsRepository {
   Future<void> deleteChatroom(String chatroomId) async {}
 }
 
-final chatRoomsRepo = Provider((ref) => ChatRoomsRepository());
+final chatRoomsRepoProvider = Provider((ref) => ChatRoomsRepository());

@@ -4,27 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatScreenViewModel extends AsyncNotifier<String> {
   Future<Map<String, dynamic>?> getOtherInfo(String targetUid) async {
-    final result = await ref.read(chatRoomsRepo).getUsersInfo();
+    final result = await ref.read(chatRoomsRepoProvider).participantsInfo();
     try {
       final Map<String, dynamic> userInfo = result.docs
           .map((doc) => doc.data())
           .firstWhere((element) => element["uid"] == targetUid);
       return userInfo;
     } catch (e) {
-      print("No user found with uid: $targetUid");
       return null;
     }
   }
 
   Future<Map<String, dynamic>?> getChatroomInfo(String uid) async {
-    final result = await ref.read(chatRoomsRepo).getUsersInfo();
+    final result = await ref.read(chatRoomsRepoProvider).participantsInfo();
     try {
       final Map<String, dynamic> userInfo = result.docs
           .map((doc) => doc.data())
           .firstWhere((element) => element["uid"] == uid);
       return userInfo;
     } catch (e) {
-      print("No user found with uid: $uid");
       return null;
     }
   }
