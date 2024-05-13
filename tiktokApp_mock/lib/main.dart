@@ -1,4 +1,3 @@
-import 'package:TikTok/features/notifications/notifications_provider.dart';
 import 'package:TikTok/features/videos/repos/playback_config_repo.dart';
 import 'package:TikTok/features/videos/view_models/playback_config_vm.dart';
 import 'package:TikTok/firebase_options.dart';
@@ -41,7 +40,6 @@ class SocialNetworkApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(notificationsProvider);
     S.load(const Locale("en"));
     return MaterialApp.router(
       routerConfig: ref.watch(routerProvider),

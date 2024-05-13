@@ -50,7 +50,24 @@ export const onLikedCreated = functions.firestore
 
     await db.collection("videos").doc(videoId).update({ // 비디오의 'likes' 필드를 1 증가
         likes:admin.firestore.FieldValue.increment(1)
-    })
+    });
+    const video = await (await db.collection("videos").doc(videoId).get()).data();
+    if(video){
+        const creatorUid = video.creatorUid;
+        const user = (await db.collection("users").doc(creatorUid).get()).data();
+    if (user){
+        const token = user.token;
+        admin.messaging().sendToDevice(token, {
+            data: {
+                "screen": "123",
+            },
+            notification: {
+                title: "someone liked your video",
+                body: "check it out"
+            }
+        })
+    }
+    }
 });
 
 // '좋아요'를 눌렀을 때(삭제)
