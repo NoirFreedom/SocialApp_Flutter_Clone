@@ -70,7 +70,7 @@ class SignUpScreen extends ConsumerWidget {
                   children: [
                     Gaps.v80,
                     Text(
-                      S.of(context).signUpTitle("App"),
+                      "Sign up for this App",
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     Gaps.v20,
@@ -145,7 +145,7 @@ class SignUpScreen extends ConsumerWidget {
                   GestureDetector(
                     onTap: () => _onLoginTap(context),
                     child: Text(
-                      S.of(context).logIn("human"),
+                      "Log in",
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: Sizes.size14,

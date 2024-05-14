@@ -104,8 +104,9 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
               ),
               Gaps.v28,
               GestureDetector(
-                  onTap: _onNextTap,
-                  child: FormButton(disabled: _username.isEmpty))
+                onTap: _onNextTap,
+                child: FormButton(disabled: _username.isEmpty),
+              )
             ],
           ),
         ),
